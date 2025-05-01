@@ -1,0 +1,57 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "life"
+version = "0.1.0"
+description = "Conway's Game of Life"
+authors = [
+    { name = "Itay Feldman", email = "itayfeldman@gmail.com" }
+]
+readme = "README.md"
+license = { text = "LICENSE" }
+requires-python = ">= 3.7"
+keywords = ["automata"]
+classifiers = [
+    # How mature is this project? Common values are
+    #   3 - Alpha
+    #   4 - Beta
+    #   5 - Production/Stable
+    "Development Status :: 3 - Alpha",
+
+    # Indicate who your project is intended for
+    "Intended Audience :: Developers",
+
+    "License :: OSI Approved :: MIT License",
+
+    # Specify the Python versions you support here.
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+
+  # Do not upload to PyP
+  "Private :: Do Not Upload",
+]
+dynamic = ["dependencies"]
+
+[project.urls]
+Homepage      = "https://github.com/itayfeldman/life"
+Documentation = "https://github.com/itayfeldman/life/wiki"
+Repo          = "https://github.com/itayfeldman/life.git"
+Issues        = "https://github.com/itayfeldman/life/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[project.scripts]
+my-command = "life.__main__:main"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+
