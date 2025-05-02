@@ -4,7 +4,9 @@ from .base_oscillator import BaseOscillator
 
 
 class Pentadecathlon(BaseOscillator):
-    """Pentadecathlon oscillator"""
+    """Pentadecathlon oscillator
+    shape=(9,16)
+    """
 
     def generate(self):
         return np.array(

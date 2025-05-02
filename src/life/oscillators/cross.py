@@ -4,7 +4,9 @@ from .base_oscillator import BaseOscillator
 
 
 class Cross(BaseOscillator):
-    """A cross oscillator"""
+    """A cross oscillator
+    shape=(9,10)
+    """
 
     def generate(self):
         return np.array(

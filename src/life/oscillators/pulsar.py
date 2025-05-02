@@ -4,7 +4,9 @@ from .base_oscillator import BaseOscillator
 
 
 class Pulsar(BaseOscillator):
-    """Pulsar oscillator"""
+    """Pulsar oscillator
+    shape=(15, 15)
+    """
 
     def generate(self):
         return np.array(

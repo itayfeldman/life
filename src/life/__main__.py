@@ -8,9 +8,9 @@ from life import Life
 parser = ArgumentParser()
 parser.add_argument("--size", type=int, default=100)
 parser.add_argument("--seed", type=str, default="noise")
-parser.add_argument("--interval", type=int, default=750)
+parser.add_argument("--interval", type=int, default=250)
 parser.add_argument("--cmap", type=str, default="binary")
-parser.add_argument("--figsize", type=int, default=10)
+parser.add_argument("--figsize", type=int, default=8)
 parser.add_argument(
     "--func", type=str, default="window", choices=["convolution", "window", "loop"]
 )

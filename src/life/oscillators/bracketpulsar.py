@@ -4,7 +4,9 @@ from .base_oscillator import BaseOscillator
 
 
 class BracketPulsar(BaseOscillator):
-    """Bracket pulsar oscillator"""
+    """Bracket pulsar oscillator
+    shape=(15,15)
+    """
 
     def generate(self):
         return np.array(

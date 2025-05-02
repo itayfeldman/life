@@ -51,7 +51,7 @@ def validate_args(size: Any, seed: Any) -> None:
         "Glider",
         "Cross",
         "Pulsar",
-        "Bracketpulsar",
+        "BracketPulsar",
         "Pentadecathlon",
     ]:
         raise SeedValueError(seed)
