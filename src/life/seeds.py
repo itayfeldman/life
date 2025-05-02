@@ -37,21 +37,21 @@ class SeedGenerators:
         return tile_pattern(tile_maker(tile_size), num_tiles)
 
     @staticmethod
-    def noisy(size: int) -> np.ndarray:
+    def noise(size: int) -> np.ndarray:
         return TileMaker.noise((size, size))
 
     @staticmethod
     def oscillator(size: int, seed: str) -> np.ndarray:
         state = TileMaker.zeros((size, size))
-        oscillator = oscillators[seed]
+        oscillator = oscillators[seed]()  # () to make sure you get the instance
         n, m = oscillator.shape
-        state[0:n, 0:m] = oscillator
+        state[0:n, 0:m] = oscillator.generate()
         return state
 
 
 def new_seed_generator(size: int, seed: str) -> np.ndarray:
     if seed == "noise":
-        return SeedGenerators.noisy(size)
+        return SeedGenerators.noise(size)
     elif seed == "symmetric":
         return SeedGenerators.symmetric(size)
     return SeedGenerators.oscillator(size, seed)

@@ -4,7 +4,7 @@ from logging.config import fileConfig
 
 from dotenv import dotenv_values
 
-DEVELOP = True
+DEVELOP = False
 
 # load development variables
 envfile = "dev.env" if DEVELOP else ".env"

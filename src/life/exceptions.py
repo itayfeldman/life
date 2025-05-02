@@ -2,6 +2,8 @@
 
 from typing import Any
 
+from oscillators_factory import oscillators
+
 MINSIZE = 10
 MAXSIZE = 1000
 
@@ -14,8 +16,7 @@ The size parameter must be an integer.
 """
 
 SEED_ERROR_MSG = f"""
-The seed parameter must be one of the following:
-    ["noise", "symmetrical", "glider", "cross", "pulsar", "bracketpulsar", "pentadecathlon"]
+The seed parameter must be one of the following: {[k for k in oscillators.keys()]}.
 """
 
 
@@ -46,11 +47,11 @@ def validate_args(size: Any, seed: Any) -> None:
         raise SizeValueError(size)
     if seed not in [
         "noise",
-        "symmetrical",
-        "glider",
-        "cross",
-        "pulsar",
-        "bracketpulsar",
-        "pentadecathlon",
+        "symmetric",
+        "Glider",
+        "Cross",
+        "Pulsar",
+        "Bracketpulsar",
+        "Pentadecathlon",
     ]:
         raise SeedValueError(seed)

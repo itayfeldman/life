@@ -7,7 +7,7 @@
 source ~/.virtualenvs/pydev/bin/activate
 
 # Now run your Python script.  Replace with the actual path
-python -m ~/Code/MiniProjects/life/src/life/__main__.py "$@"
+python ~/Code/Projects/life/src/life/__main__.py "$@"
 
 # Optionally, deactivate at the end of the script
 deactivate

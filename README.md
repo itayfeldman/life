@@ -18,7 +18,7 @@ The program can take a few command line arguments:
 * `--interval`: the interval between generations in milliseconds (default: 750)
 * `--cmap`: the color map to use (default: 'binary')
 * `--figsize`: the size of the figure (default: 5)
-* `--fx`: the function to use (default: convolution_fx)
+* `--func`: the function to use (default: convolution_fx)
 
 
 ## Performance
@@ -40,11 +40,12 @@ loop_fx:       | 19.057438|   140.01x
 
 ## References
 
+### Game of Life
 * https://ddejohn.github.io/2021/08/20/life.html
 * https://jakevdp.github.io/blog/2013/08/07/conways-game-of-life/
 * https://drsfenner.org/blog/2015/07/game-of-life-in-numpy-preliminaries-2/
 * https://drsfenner.org/blog/2015/08/game-of-life-in-numpy-2/
-
+### NumPy
 * http://scipy-lectures.github.io/advanced/advanced_numpy/#indexing-scheme-strides
 * http://chintaksheth.wordpress.com/2013/07/31/numpy-the-tricks-of-the-trade-part-ii/
 * https://scipy-cookbook.readthedocs.io/items/GameOfLifeStrides.html

@@ -18,10 +18,10 @@ class Life:
     size : int
         The size of the game of life board.
         Value must be greater than 10 and less than 1000 (1 million cells).
-    seed : str {'noise', 'symmetrical', 'glider', 'pulsar', 'cross', 'bracketpulser', 'pentadecathlon'}
+    seed : str {'noise', 'symmetric', 'glider', 'pulsar', 'cross', 'bracketpulser', 'pentadecathlon'}
         The seed to use for the game of life board.
         * "noise" - Randomly generated board.
-        * "symmetrical" - Symmetrical board.
+        * "symmetric" - symmetric board.
         Oscillators:
         * "glider" - Empty board with a glider.
         * "cross" - Board with a single cross (size=10).

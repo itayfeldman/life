@@ -2,14 +2,9 @@ from importlib import import_module
 import os
 import inspect
 
+
 # Dictionary to store all oscillator classes
 oscillators = {}
-
-
-def register_oscillator(cls):
-    """Decorator to register oscillator classes in the oscillators dictionary"""
-    oscillators[cls.__name__] = cls
-    return cls
 
 
 def load_oscillators():
@@ -37,11 +32,3 @@ def load_oscillators():
 
 # Load all oscillators when this module is imported
 load_oscillators()
-
-
-def create_oscillator(oscillator_type, *args, **kwargs):
-    """Factory function to create oscillator instances"""
-    if oscillator_type not in oscillators:
-        raise ValueError(f"Unknown oscillator type: {oscillator_type}")
-
-    return oscillators[oscillator_type](*args, **kwargs)

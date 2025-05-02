@@ -8,9 +8,10 @@ class BaseOscillator:
 
     is_oscillator = True
 
-    def __init__(self, frequency=440):
-        self.frequency = frequency
+    @property
+    def shape(self):
+        return self.generate().shape
 
-    def generate(self, time):
+    def generate(self) -> Oscillator:
         """Generate oscillator output at the given time"""
         raise NotImplementedError("Subclasses must implement generate method")
