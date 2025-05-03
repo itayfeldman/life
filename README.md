@@ -34,8 +34,8 @@ loop_fx:       | 19.057438|   140.01x
 
 ## To Dos
 
-* Improve the seed_generation using the oscillators
-* Add oscillators ...
+* Improve the seed_generation using the Patterns
+* Add Patterns ...
 
 
 ## References

@@ -1,9 +1,9 @@
 from typing import Callable, Iterator
 
 import numpy as np
-from count import convolution, loop, window
-from exceptions import validate_args
-from seeds import new_seed_generator
+
+from life.exceptions import validate_args
+from life.seeds import new_seed_generator
 
 LifeState = np.ndarray
 LifeIterator = Iterator[LifeState]
@@ -22,12 +22,12 @@ class Life:
         The seed to use for the game of life board.
         * "noise" - Randomly generated board.
         * "symmetric" - symmetric board.
-        Oscillators:
+        Patterns:
         * "glider" - Empty board with a glider.
         * "cross" - Board with a single cross (size=10).
         * "pulsar" - Board with a single pulsar (size=15).
         * "bracketpulser" - Board with a single bracket pulser (size=15).
-        * "pentadecathlon" - Period-15 oscillator (size=16).
+        * "pentadecathlon" - Period-15 Pattern (size=16).
     func : Callable
         The function to use to calculate the next state of the game of life board.
     """
@@ -41,5 +41,13 @@ class Life:
         return self
 
     def __next__(self) -> LifeState:
+        """
+        Advances the simulation by one step and returns the new state.
+
+        Returns
+        -------
+        LifeState
+            The updated state after applying the life rules.
+        """
         self.state = self.func(self.state)
         return self.state

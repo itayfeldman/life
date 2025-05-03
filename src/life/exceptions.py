@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from oscillators_factory import oscillators
+from life.pattern_factory import patterns
 
 MINSIZE = 10
 MAXSIZE = 1000
@@ -16,7 +16,7 @@ The size parameter must be an integer.
 """
 
 SEED_ERROR_MSG = f"""
-The seed parameter must be one of the following: {[k for k in oscillators.keys()]}.
+The seed parameter must be one of the following: {[k for k in patterns.keys()]}.
 """
 
 
@@ -45,13 +45,14 @@ def validate_args(size: Any, seed: Any) -> None:
         raise SizeTypeError(size)
     if size < MINSIZE or size > MAXSIZE:
         raise SizeValueError(size)
-    if seed not in [
-        "noise",
-        "symmetric",
-        "Glider",
-        "Cross",
-        "Pulsar",
-        "BracketPulsar",
-        "Pentadecathlon",
-    ]:
-        raise SeedValueError(seed)
+    # if seed not in [
+    #     "noise",
+    #     "symmetric",
+    #     "Glider",
+    #     "GliderGun",
+    #     "Cross",
+    #     "Pulsar",
+    #     "BracketPulsar",
+    #     "Pentadecathlon",
+    # ]:
+    # raise SeedValueError(seed)

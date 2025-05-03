@@ -1,9 +1,9 @@
 from argparse import ArgumentParser
 
 import matplotlib.pyplot as plt
-from animator import Animator
-from count import convolution, loop, window
-from life import Life
+from life.animator import Animator
+from life.counters import convolution, loop, window
+from life.life import Life
 
 parser = ArgumentParser()
 parser.add_argument("--size", type=int, default=100)

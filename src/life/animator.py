@@ -1,7 +1,7 @@
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 
-from life import Life
+from life.life import Life
 
 
 class Animator:
@@ -25,7 +25,7 @@ class Animator:
         The animation of the game of life.
     """
 
-    def __init__(self, frames: Life, cmap: str, interval: int, figsize: int):
+    def __init__(self, frames: Life, cmap: str, interval: int, figsize: int) -> None:
         self.frames: Life = frames
         self.cmap: str = cmap
         self.interval: int = interval

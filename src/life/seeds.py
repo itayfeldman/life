@@ -2,8 +2,8 @@ import random
 from typing import Iterator, Tuple, Union
 
 import numpy as np
-from oscillators_factory import oscillators
-from tiles import TileMaker, TilePattern
+from life.pattern_factory import patterns
+from life.tiles import TileMaker, TilePattern
 
 ArrayShape = Tuple[int, int]
 LifeSeed = Tile = np.ndarray
@@ -41,11 +41,11 @@ class SeedGenerators:
         return TileMaker.noise((size, size))
 
     @staticmethod
-    def oscillator(size: int, seed: str) -> np.ndarray:
+    def Pattern(size: int, seed: str) -> np.ndarray:
         state = TileMaker.zeros((size, size))
-        oscillator = oscillators[seed]()  # () to make sure you get the instance
-        n, m = oscillator.shape
-        state[0:n, 0:m] = oscillator.generate()
+        pattern = patterns[seed]
+        n, m = pattern.shape
+        state[0:n, 0:m] = pattern
         return state
 
 
@@ -54,4 +54,4 @@ def new_seed_generator(size: int, seed: str) -> np.ndarray:
         return SeedGenerators.noise(size)
     elif seed == "symmetric":
         return SeedGenerators.symmetric(size)
-    return SeedGenerators.oscillator(size, seed)
+    return SeedGenerators.Pattern(size, seed)

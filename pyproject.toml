@@ -25,17 +25,20 @@ classifiers = [
     # Indicate who your project is intended for
     "Intended Audience :: Developers",
 
+    # License
     "License :: OSI Approved :: MIT License",
 
     # Specify the Python versions you support here.
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 
-  # Do not upload to PyP
-  "Private :: Do Not Upload",
+    # Do not upload to PyP
+    "Private :: Do Not Upload",
 ]
 dynamic = ["dependencies"]
 
@@ -46,12 +49,11 @@ Repo          = "https://github.com/itayfeldman/life.git"
 Issues        = "https://github.com/itayfeldman/life/issues"
 
 [tool.setuptools]
+packages = ["life"]
 package-dir = {"" = "src"}
 
 [project.scripts]
-my-command = "life.__main__:main"
+life = "life.__main__:main"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
-
-
