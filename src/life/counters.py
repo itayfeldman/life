@@ -14,7 +14,7 @@ def window(state: LifeState) -> LifeState:
 
     Parameters
     ----------
-    state : LifeState
+    state: LifeState
         The current state of the Game of Life.
 
     Returns

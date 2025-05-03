@@ -13,13 +13,18 @@ def load_objects_from_directory(directory, base_package, filter=None):
     """
     Load object from modules in a directory that match a filter
 
-    Args:
-        directory: Directory to scan for modules
-        base_package: Base package name for imports
-        filter: Function that takes an object and returns True if it should be included
+    Parameters
+    ----------
+    directory: str
+        Directory to scan for modules
+    base_package: str
+        Base package name for imports
+    filter: Callable
+        Function that takes an object and returns True if it should be included
 
-    Returns:
-        Dictionary mapping object names to objects
+    Returns
+    -------
+    Dictionary mapping object names to objects
     """
     result = {}
     try:

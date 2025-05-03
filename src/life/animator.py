@@ -10,13 +10,13 @@ class Animator:
 
     Parameters
     ----------
-    frames : Life
+    frames: Life
         An instance of the Life class that provides the state of the game of life.
-    cmap : str
+    cmap: str
         The color map to use for the game of life board.
-    interval : int
+    interval: int
         The interval between frames in milliseconds.
-    figsize : int
+    figsize: int
         The size of the figure for the game of life board.
 
     Returns

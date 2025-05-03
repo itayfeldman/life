@@ -15,10 +15,10 @@ class Life:
 
     Parameters
     ----------
-    size : int
+    size: int
         The size of the game of life board.
         Value must be greater than 10 and less than 1000 (1 million cells).
-    seed : str {'noise', 'symmetric', 'glider', 'pulsar', 'cross', 'bracketpulser', 'pentadecathlon'}
+    seed: str {'noise', 'symmetric', 'glider', 'pulsar', 'cross', 'bracketpulser', 'pentadecathlon'}
         The seed to use for the game of life board.
         * "noise" - Randomly generated board.
         * "symmetric" - symmetric board.
@@ -28,7 +28,7 @@ class Life:
         * "pulsar" - Board with a single pulsar (size=15).
         * "bracketpulser" - Board with a single bracket pulser (size=15).
         * "pentadecathlon" - Period-15 Pattern (size=16).
-    func : Callable
+    func: Callable
         The function to use to calculate the next state of the game of life board.
     """
 
