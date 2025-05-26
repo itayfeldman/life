@@ -1,11 +1,10 @@
 import itertools
-from typing import List
+from numpy.typing import NDArray
 
 from scipy.signal import convolve2d
 import numpy as np
-from numpy.lib.stride_tricks import sliding_window_view
 
-LifeState = np.ndarray
+LifeState = NDArray[np.int8]
 
 
 def window(state: LifeState) -> LifeState:
@@ -33,7 +32,9 @@ def window(state: LifeState) -> LifeState:
         for i, j in itertools.product([-1, 0, 1], repeat=2)
         if (i, j) != (0, 0)
     )
-    return (neighbor_count == 3) | ((state == 1) & (neighbor_count == 2))
+    return np.asarray(
+        (neighbor_count == 3) | ((state == 1) & (neighbor_count == 2)), dtype=np.int8
+    )
 
 
 def convolution(state: LifeState) -> LifeState:
@@ -59,7 +60,9 @@ def convolution(state: LifeState) -> LifeState:
     neighbor_count = (
         convolve2d(state, np.ones((3, 3)), mode="same", boundary="wrap") - state
     )
-    return (neighbor_count == 3) | ((state == 1) & (neighbor_count == 2))
+    return np.asarray(
+        (neighbor_count == 3) | ((state == 1) & (neighbor_count == 2)), dtype=np.int8
+    )
 
 
 def loop(state: LifeState) -> LifeState:

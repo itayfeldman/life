@@ -7,6 +7,7 @@ from life.pattern_factory import patterns
 MINSIZE = 10
 MAXSIZE = 1000
 
+
 SIZE_ERROR_MSG = f"""
 The size parameter must between {MINSIZE} and {MAXSIZE}.
 """
@@ -45,14 +46,5 @@ def validate_args(size: Any, seed: Any) -> None:
         raise SizeTypeError(size)
     if size < MINSIZE or size > MAXSIZE:
         raise SizeValueError(size)
-    # if seed not in [
-    #     "noise",
-    #     "symmetric",
-    #     "Glider",
-    #     "GliderGun",
-    #     "Cross",
-    #     "Pulsar",
-    #     "BracketPulsar",
-    #     "Pentadecathlon",
-    # ]:
+    # if seed not in patterns.keys():
     # raise SeedValueError(seed)

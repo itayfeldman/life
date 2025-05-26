@@ -25,11 +25,11 @@ The program can take a few command line arguments:
 
 Benchmark to run 100x100 grid for 1000 generations
 
-Function       |  Time (s)|  Speedup
----------------|----------|-----------
-convolution_fx:|  0.232555|     1.71x
-window_fx:     |  0.136055|     1.00x
-loop_fx:       | 19.057438|   140.01x
+| Function    | Mean    | StdDev  | Min     | Max     |
+|-------------|---------|---------|---------|---------|
+| convolution |  0.2489 | 0.0115  |  0.2416 |  0.2693 |
+| window      |  0.0922 | 0.0076  |  0.0857 |  0.1051 |
+| loop        | 20.3257 | 0.4198  | 19.8493 | 20.9317 |
 
 
 ## To Dos

@@ -2,13 +2,13 @@ from argparse import ArgumentParser
 
 import matplotlib.pyplot as plt
 from life.animator import Animator
-from life.counters import convolution, loop, window
+from life.counters import convolution, loop, window  # type: ignore
 from life.life import Life
 
 parser = ArgumentParser()
 parser.add_argument("--size", type=int, default=100)
 parser.add_argument("--seed", type=str, default="noise")
-parser.add_argument("--interval", type=int, default=250)
+parser.add_argument("--interval", type=int, default=350)
 parser.add_argument("--cmap", type=str, default="binary")
 parser.add_argument("--figsize", type=int, default=5)
 parser.add_argument(
@@ -16,13 +16,9 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-func_map = {"convolution": convolution, "window": window, "loop": loop}
-selected_func = func_map[args.func]
-
-
-life = Life(size=args.size, seed=args.seed, func=selected_func)
+life = Life(size=args.size, seed=args.seed, func=eval(args.func))
 animator = Animator(
-    frames=life, cmap=args.cmap, interval=args.interval, figsize=args.figsize
+    life=life, cmap=args.cmap, interval=args.interval, figsize=args.figsize
 )
 ani = animator()
-plt.show()
+plt.show()  # type: ignore

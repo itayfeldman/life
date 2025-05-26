@@ -10,7 +10,7 @@ class Animator:
 
     Parameters
     ----------
-    frames: Life
+    life: Life
         An instance of the Life class that provides the state of the game of life.
     cmap: str
         The color map to use for the game of life board.
@@ -25,21 +25,24 @@ class Animator:
         The animation of the game of life.
     """
 
-    def __init__(self, frames: Life, cmap: str, interval: int, figsize: int) -> None:
-        self.frames: Life = frames
+    def __init__(self, life: Life, cmap: str, interval: int, figsize: int) -> None:
+        self.life: Life = life
         self.cmap: str = cmap
         self.interval: int = interval
         self.figsize: int = figsize
 
     def __call__(self) -> animation.FuncAnimation:
         fig, ax = plt.subplots(figsize=(self.figsize, self.figsize))
-        im = ax.imshow(self.frames.state, cmap=self.cmap, interpolation="nearest")
+        # Display the initial state of the game.
+        # self.life is an iterator. Calling next() on it advances the state.
+        # We need the state *before* the first animation step for the initial display.
+        im = ax.imshow(self.life.state, cmap=self.cmap, interpolation="nearest")
         plt.axis("off")
 
         return animation.FuncAnimation(
             fig=fig,
-            func=lambda _: [im.set_data(self.frames.state)],
-            frames=self.frames,
+            func=lambda _: [im.set_data(self.life.state)],
+            frames=self.life,
             interval=self.interval,
             cache_frame_data=False,
         )

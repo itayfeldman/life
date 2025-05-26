@@ -1,10 +1,11 @@
 import random
 from typing import Iterator, Tuple
+from numpy.typing import NDArray
 
 import numpy as np
 
-Tile = np.ndarray
-LifeSeed = np.ndarray
+Tile = NDArray[np.int8]
+LifeSeed = NDArray[np.int8]
 ArrayShape = Tuple[int, int]
 LifeSeedGenerator = Iterator[LifeSeed]
 
@@ -18,18 +19,18 @@ class TileMaker:
         tile_maker = random.choice(
             (TileMaker.diagonal, TileMaker.inverted_diagonal, TileMaker.quilt)
         )
-        array = tile_maker((tile_size,) * 2)
+        array = tile_maker((tile_size, tile_size))
         return rotator(array) if rotator else array
 
     @staticmethod
     def noise(shape: ArrayShape) -> Tile:
         """Binary noise tile, the base working unit for the other methods"""
-        return np.random.randint(2, size=shape, dtype="uint8")
+        return np.random.randint(2, size=shape, dtype=np.int8)
 
     @staticmethod
     def zeros(shape: ArrayShape) -> Tile:
         """A zeros array"""
-        return np.zeros(shape=shape, dtype="uint8")
+        return np.zeros(shape=shape, dtype=np.int8)
 
     @staticmethod
     def quilt(shape: ArrayShape) -> Tile:

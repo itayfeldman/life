@@ -1,73 +1,80 @@
-from importlib import import_module
 import os
-import inspect
+from typing import Callable, Dict
+from pathlib import Path
+
+import numpy as np
 
 from life import logger
 from life.patterns import Pattern
 
-# Dictionary to store all pattern objects
-patterns = {}
+Patterns = Dict[str, Pattern]
 
 
-def load_objects_from_directory(directory, base_package, filter=None):
+def load_pattern_from_cells(file_path: Path) -> Pattern:
     """
-    Load object from modules in a directory that match a filter
+    Load a pattern from a .cells file.
 
-    Parameters
-    ----------
-    directory: str
-        Directory to scan for modules
-    base_package: str
-        Base package name for imports
-    filter: Callable
-        Function that takes an object and returns True if it should be included
-
-    Returns
-    -------
-    Dictionary mapping object names to objects
+    .cells format:
+    - Lines starting with '!' are comments
+    - 'O' represents live cells
+    - '.' represents dead cells
+    - Each line represents a row
     """
-    result = {}
-    try:
-        for filename in os.listdir(directory):
-            if filename.endswith(".py") and filename != "__init__.py":
-                module_name = filename[:-3]
-                module_path = f"{base_package}.{module_name}"
+    lines: list[str] = []
+    with open(file_path, "r") as f:
+        for line in f:
+            if line and not line.startswith("!"):
+                line = line.rstrip()
+                lines.append(line)
 
-                try:
-                    module = import_module(module_path)
+    if not lines:
+        raise ValueError(f"No pattern data found in {file_path}")
 
-                    for name, obj in inspect.getmembers(module):
-                        if filter and callable(filter) and filter(obj):
-                            result[name] = obj
-                except ImportError as e:
-                    logger.error(f"Error importing {module_path}: {e}")
-    except Exception as e:
-        logger.error(f"Error loading patterns from {directory}: {e}")
+    # Determine dimensions
+    max_width = max(len(line) for line in lines)
+    height = len(lines)
+
+    # Create pattern array
+    pattern = np.zeros((height, max_width), dtype=np.int8)
+
+    for i, line in enumerate(lines):
+        for j, char in enumerate(line):
+            if char == "O":
+                pattern[i, j] = 1
+            # Everything else (including '.') is treated as 0 (dead cell)
+
+    return pattern
+
+
+def load_objects_from_pattern_dir(
+    pattern_dir: str, filter: Callable[[object], bool] | None = None
+):
+    """
+    Load patterns from .cells files in a pattern_dir and all subdirectories
+    """
+    result: Patterns = {}
+    pattern_dir_path = Path(pattern_dir)
+
+    # Use rglob to recursively find all .cells files
+    for file_path in pattern_dir_path.rglob("*.cells"):
+        try:
+            pattern_name = str(file_path.name[:-6])
+            pattern = load_pattern_from_cells(file_path)
+            if filter is None or filter(pattern):
+                result[pattern_name] = pattern
+                logger.debug(f"Loaded pattern '{pattern_name}' from {file_path}")
+        except Exception as e:
+            logger.error(f"Error loading pattern from {file_path}: {e}")
 
     return result
 
 
-def load_patterns():
+def get_patterns() -> Patterns:
     pattern_dir = os.path.join(os.path.dirname(__file__), "patterns")
-    patterns.update(
-        load_objects_from_directory(
-            pattern_dir,
-            "life.patterns",
-            lambda obj: type(obj) == Pattern,
-        )
+    return load_objects_from_pattern_dir(
+        pattern_dir,
+        lambda obj: isinstance(obj, np.ndarray),
     )
 
 
-# Replace direct loading with a function
-def get_patterns():
-    """Get all pattern classes, loading them if necessary"""
-    if not patterns:
-        load_patterns()
-    return patterns
-
-
-get_patterns()
-
-
-if __name__ == "__main__":
-    get_patterns()
+patterns: Patterns = get_patterns()

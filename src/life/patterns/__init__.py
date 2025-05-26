@@ -1,3 +1,4 @@
+from numpy.typing import NDArray
 import numpy as np
 
-Pattern = np.ndarray
+Pattern = NDArray[np.int8]
