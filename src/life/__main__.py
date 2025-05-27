@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 
 import matplotlib.pyplot as plt
 from life.animator import Animator
-from life.counters import convolution, loop, window  # type: ignore
+from life.counters import *
 from life.life import Life
 
 parser = ArgumentParser()
@@ -12,7 +12,17 @@ parser.add_argument("--interval", type=int, default=350)
 parser.add_argument("--cmap", type=str, default="binary")
 parser.add_argument("--figsize", type=int, default=5)
 parser.add_argument(
-    "--func", type=str, default="window", choices=["convolution", "window", "loop"]
+    "--func",
+    type=str,
+    default="fast_neighbors",
+    choices=[
+        "convolution",
+        "window",
+        "loop",
+        "fast_neighbors",
+        "ultra_fast_neighbors",
+        "vectorized_neighbors",
+    ],
 )
 args = parser.parse_args()
 

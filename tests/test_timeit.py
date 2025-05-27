@@ -1,7 +1,14 @@
 import timeit
 import statistics
 from life.life import Life
-from life.counters import convolution, window, loop
+from life.counters import (
+    convolution,
+    window,
+    loop,
+    fast_neighbors,
+    ultra_fast_neighbors,
+    vectorized_neighbors,
+)
 
 
 from typing import Callable, Dict, Any
@@ -35,7 +42,14 @@ def benchmark_function(
 
 
 if __name__ == "__main__":
-    funcs = {"convolution": convolution, "window": window, "loop": loop}
+    funcs = {
+        "convolution": convolution,
+        "window": window,
+        "loop": loop,
+        "fast_neighbors": fast_neighbors,
+        "ultra_fast": ultra_fast_neighbors,
+        "vectorized": vectorized_neighbors,
+    }
 
     print(f"{'Function':<12} {'Mean':<10} {'StdDev':<10} {'Min':<10} {'Max':<10}")
     print("-" * 60)

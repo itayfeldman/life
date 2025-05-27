@@ -25,12 +25,15 @@ The program can take a few command line arguments:
 
 Benchmark to run 100x100 grid for 1000 generations
 
-| Function    | Mean    | StdDev  | Min     | Max     |
-|-------------|---------|---------|---------|---------|
-| convolution |  0.2489 | 0.0115  |  0.2416 |  0.2693 |
-| window      |  0.0922 | 0.0076  |  0.0857 |  0.1051 |
-| loop        | 20.3257 | 0.4198  | 19.8493 | 20.9317 |
 
+Function      |     Mean |    StdDev|       Min|       Max|
+--------------|----------|----------|----------|----------|
+convolution   |    0.2436|    0.0062|    0.2355|    0.2509|
+window        |    0.0920|    0.0027|    0.0894|    0.0964|
+loop          |   20.6971|    0.2437|   20.3488|   20.9214|
+fast_neighbors|    0.0417|    0.0027|    0.0403|    0.0465|
+ultra_fast    |    0.2371|    0.0150|    0.2296|    0.2640|
+vectorized    |    0.0763|    0.0036|    0.0745|    0.0828|
 
 ## To Dos
 

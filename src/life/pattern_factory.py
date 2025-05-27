@@ -4,13 +4,12 @@ from pathlib import Path
 
 import numpy as np
 
-from life import logger
-from life.patterns import Pattern
+from life import logger, LifeState
 
-Patterns = Dict[str, Pattern]
+Patterns = Dict[str, LifeState]
 
 
-def load_pattern_from_cells(file_path: Path) -> Pattern:
+def load_pattern_from_cells(file_path: Path) -> LifeState:
     """
     Load a pattern from a .cells file.
 
@@ -48,7 +47,7 @@ def load_pattern_from_cells(file_path: Path) -> Pattern:
 
 def load_objects_from_pattern_dir(
     pattern_dir: str, filter: Callable[[object], bool] | None = None
-):
+) -> Patterns:
     """
     Load patterns from .cells files in a pattern_dir and all subdirectories
     """
@@ -77,4 +76,4 @@ def get_patterns() -> Patterns:
     )
 
 
-patterns: Patterns = get_patterns()
+patterns = get_patterns()

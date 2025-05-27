@@ -1,20 +1,18 @@
 import random
-from typing import Iterator, Tuple
-from numpy.typing import NDArray
+from typing import Tuple
 
 import numpy as np
 
-Tile = NDArray[np.int8]
-LifeSeed = NDArray[np.int8]
+from life import LifeState
+
 ArrayShape = Tuple[int, int]
-LifeSeedGenerator = Iterator[LifeSeed]
 
 
 class TileMaker:
     """Static methods for generating random binary tiles"""
 
     @staticmethod
-    def __call__(tile_size: int) -> Tile:
+    def __call__(tile_size: int) -> LifeState:
         rotator = random.choice((np.fliplr, np.flipud, np.rot90, None))
         tile_maker = random.choice(
             (TileMaker.diagonal, TileMaker.inverted_diagonal, TileMaker.quilt)
@@ -23,28 +21,28 @@ class TileMaker:
         return rotator(array) if rotator else array
 
     @staticmethod
-    def noise(shape: ArrayShape) -> Tile:
+    def noise(shape: ArrayShape) -> LifeState:
         """Binary noise tile, the base working unit for the other methods"""
         return np.random.randint(2, size=shape, dtype=np.int8)
 
     @staticmethod
-    def zeros(shape: ArrayShape) -> Tile:
+    def zeros(shape: ArrayShape) -> LifeState:
         """A zeros array"""
         return np.zeros(shape=shape, dtype=np.int8)
 
     @staticmethod
-    def quilt(shape: ArrayShape) -> Tile:
+    def quilt(shape: ArrayShape) -> LifeState:
         """A base triangular array"""
         return np.triu(TileMaker.noise(shape=shape))
 
     @staticmethod
-    def diagonal(shape: ArrayShape) -> Tile:
+    def diagonal(shape: ArrayShape) -> LifeState:
         """A diagonal symmetric array"""
         tri = TileMaker.quilt(shape=shape)
         return np.clip(tri * tri.T, 0, 1)
 
     @staticmethod
-    def inverted_diagonal(shape: ArrayShape) -> Tile:
+    def inverted_diagonal(shape: ArrayShape) -> LifeState:
         """Diagonally symmetric array with flipped bits in lower triangular"""
         tri = TileMaker.quilt(shape=shape)
         return np.triu(np.where(tri, 0, 1)).T * tri
@@ -54,7 +52,7 @@ class TilePattern:
     """Static methods for tiling an array with different symmetries"""
 
     @staticmethod
-    def __call__(array: Tile, pattern_number: int) -> LifeSeed:
+    def __call__(array: LifeState, pattern_number: int) -> LifeState:
         tiling_method = random.choice(
             (
                 TilePattern.four_corners,
@@ -66,7 +64,7 @@ class TilePattern:
         return np.tile(tiling_method(array), (pattern_number,) * 2)
 
     @staticmethod
-    def four_corners(NW: Tile) -> LifeSeed:
+    def four_corners(NW: LifeState) -> LifeState:
         """
         Radial symmetry, e.g.:
         ```
@@ -82,7 +80,7 @@ class TilePattern:
         return np.block([[NW, NE], [SW, SE]])
 
     @staticmethod
-    def book_match(L: Tile) -> LifeSeed:
+    def book_match(L: LifeState) -> LifeState:
         """
         Vertical symmetry, e.g.:
         ```
@@ -96,7 +94,7 @@ class TilePattern:
         return np.block([[L, R], [L, R]])
 
     @staticmethod
-    def hamburger(T: Tile) -> LifeSeed:
+    def hamburger(T: LifeState) -> LifeState:
         """
         Horizontal symmetry, e.g.:
         ```
@@ -110,7 +108,7 @@ class TilePattern:
         return np.block([[T, T], [B, B]])
 
     @staticmethod
-    def repeat(x: Tile) -> LifeSeed:
+    def repeat(x: LifeState) -> LifeState:
         """
         Repeating tiles, e.g.:
         ```

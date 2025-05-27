@@ -1,13 +1,8 @@
-from typing import Callable, Iterator
-from numpy.typing import NDArray
+from typing import Callable
 
-import numpy as np
-
+from life import LifeState, LifeIterator
 from life.exceptions import validate_args
 from life.seeds import new_seed_generator
-
-LifeState = NDArray[np.int8]
-LifeIterator = Iterator[LifeState]
 
 
 class Life:

@@ -1,19 +1,13 @@
 import random
-from typing import Tuple
-from numpy.typing import NDArray
 
-import numpy as np
+from life import LifeState
 from life.pattern_factory import patterns
 from life.tiles import TileMaker, TilePattern
-
-ArrayShape = Tuple[int, int]
-LifeSeed = NDArray[np.int8]
-Tile = NDArray[np.int8]
 
 
 class SeedGenerators:
     @staticmethod
-    def symmetric(n: int) -> NDArray[np.int8]:
+    def symmetric(n: int) -> LifeState:
         """
         Taking `n` as the desired dimensions of the final seed, this generator
         first breaks down `n` by half into `k`, and then `k` into a tuple
@@ -39,11 +33,11 @@ class SeedGenerators:
         return tile_pattern(tile_maker(tile_size), num_tiles)
 
     @staticmethod
-    def noise(size: int) -> NDArray[np.int8]:
+    def noise(size: int) -> LifeState:
         return TileMaker.noise((size, size))
 
     @staticmethod
-    def pattern(size: int, seed: str) -> NDArray[np.int8]:
+    def pattern(size: int, seed: str) -> LifeState:
         state = TileMaker.zeros((size, size))
         pattern = patterns[seed]
         n, m = pattern.shape
@@ -51,7 +45,7 @@ class SeedGenerators:
         return state
 
 
-def new_seed_generator(size: int, seed: str) -> NDArray[np.int8]:
+def new_seed_generator(size: int, seed: str) -> LifeState:
     if seed == "noise":
         return SeedGenerators.noise(size)
     elif seed == "symmetric":

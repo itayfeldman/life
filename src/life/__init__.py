@@ -1,10 +1,18 @@
 import logging
 from logging import Logger
 from logging.config import fileConfig
+from typing import Iterator
+
+from numpy import int8
+from numpy.typing import NDArray
 
 from dotenv import dotenv_values
 
+LifeState = NDArray[int8]
+LifeIterator = Iterator[LifeState]
+
 DEVELOP = False
+
 
 # load development variables
 envfile = "dev.env" if DEVELOP else ".env"
