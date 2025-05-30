@@ -1,13 +1,13 @@
 import timeit
 import statistics
 from life.life import Life
-from life.counters import (
+from life.engine import (
     convolution,
     window,
     loop,
-    fast_neighbors,
-    ultra_fast_neighbors,
-    vectorized_neighbors,
+    fast,
+    ultra_fast,
+    vectorized,
 )
 
 
@@ -46,9 +46,9 @@ if __name__ == "__main__":
         "convolution": convolution,
         "window": window,
         "loop": loop,
-        "fast_neighbors": fast_neighbors,
-        "ultra_fast": ultra_fast_neighbors,
-        "vectorized": vectorized_neighbors,
+        "fast": fast,
+        "ultra_fast": ultra_fast,
+        "vectorized": vectorized,
     }
 
     print(f"{'Function':<12} {'Mean':<10} {'StdDev':<10} {'Min':<10} {'Max':<10}")

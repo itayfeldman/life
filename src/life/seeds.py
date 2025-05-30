@@ -1,13 +1,13 @@
 import random
 
-from life import LifeState
+from life import State
 from life.pattern_factory import patterns
 from life.tiles import TileMaker, TilePattern
 
 
 class SeedGenerators:
     @staticmethod
-    def symmetric(n: int) -> LifeState:
+    def symmetric(n: int) -> State:
         """
         Taking `n` as the desired dimensions of the final seed, this generator
         first breaks down `n` by half into `k`, and then `k` into a tuple
@@ -33,11 +33,11 @@ class SeedGenerators:
         return tile_pattern(tile_maker(tile_size), num_tiles)
 
     @staticmethod
-    def noise(size: int) -> LifeState:
+    def noise(size: int) -> State:
         return TileMaker.noise((size, size))
 
     @staticmethod
-    def pattern(size: int, seed: str) -> LifeState:
+    def pattern(size: int, seed: str) -> State:
         state = TileMaker.zeros((size, size))
         pattern = patterns[seed]
         n, m = pattern.shape
@@ -45,7 +45,7 @@ class SeedGenerators:
         return state
 
 
-def new_seed_generator(size: int, seed: str) -> LifeState:
+def new_seed_generator(size: int, seed: str) -> State:
     if seed == "noise":
         return SeedGenerators.noise(size)
     elif seed == "symmetric":

@@ -2,26 +2,26 @@ from argparse import ArgumentParser
 
 import matplotlib.pyplot as plt
 from life.animator import Animator
-from life.counters import *
+from life.engine import *
 from life.life import Life
 
 parser = ArgumentParser()
 parser.add_argument("--size", type=int, default=100)
 parser.add_argument("--seed", type=str, default="noise")
-parser.add_argument("--interval", type=int, default=350)
+parser.add_argument("--interval", type=int, default=500)
 parser.add_argument("--cmap", type=str, default="binary")
 parser.add_argument("--figsize", type=int, default=5)
 parser.add_argument(
     "--func",
     type=str,
-    default="fast_neighbors",
+    default="fast",
     choices=[
         "convolution",
         "window",
         "loop",
-        "fast_neighbors",
-        "ultra_fast_neighbors",
-        "vectorized_neighbors",
+        "fast",
+        "ultra_fast",
+        "vectorized",
     ],
 )
 args = parser.parse_args()

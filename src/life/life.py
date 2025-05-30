@@ -1,6 +1,4 @@
-from typing import Callable
-
-from life import LifeState, LifeIterator
+from life import State, StateIterator, StateUpdater
 from life.exceptions import validate_args
 from life.seeds import new_seed_generator
 
@@ -23,23 +21,21 @@ class Life:
         The function to use to calculate the next state of the game of life board.
     """
 
-    def __init__(
-        self, size: int, seed: str, func: Callable[[LifeState], LifeState]
-    ) -> None:
+    def __init__(self, size: int, seed: str, func: StateUpdater) -> None:
         validate_args(size, seed)
-        self.state: LifeState = new_seed_generator(size=size, seed=seed)
-        self.func: Callable[[LifeState], LifeState] = func
+        self.state: State = new_seed_generator(size=size, seed=seed)
+        self.func: StateUpdater = func
 
-    def __iter__(self) -> LifeIterator:
+    def __iter__(self) -> StateIterator:
         return self
 
-    def __next__(self) -> LifeState:
+    def __next__(self) -> State:
         """
         Advances the simulation by one step and returns the new state.
 
         Returns
         -------
-        LifeState
+        State
             The updated state after applying the life rules.
         """
         self.state = self.func(self.state)

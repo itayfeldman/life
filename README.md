@@ -15,15 +15,15 @@ The program can take a few command line arguments:
 
 * `--size`: the size of the grid (default: 100, min: 10, max: 1000)
 * `--seed`: the seed for the random number generator (default: noise)
-* `--interval`: the interval between generations in milliseconds (default: 750)
+* `--interval`: the interval between generations in milliseconds (default: 500)
 * `--cmap`: the color map to use (default: 'binary')
 * `--figsize`: the size of the figure (default: 5)
-* `--func`: the function to use (default: convolution_fx)
+* `--func`: the function to use (default: fast_neighbors)
 
 
 ## Performance
 
-Benchmark to run 100x100 grid for 1000 generations
+Benchmark to run 100x100 grid for 1000 generations (in seconds)
 
 
 Function      |     Mean |    StdDev|       Min|       Max|
@@ -31,7 +31,7 @@ Function      |     Mean |    StdDev|       Min|       Max|
 convolution   |    0.2436|    0.0062|    0.2355|    0.2509|
 window        |    0.0920|    0.0027|    0.0894|    0.0964|
 loop          |   20.6971|    0.2437|   20.3488|   20.9214|
-fast_neighbors|    0.0417|    0.0027|    0.0403|    0.0465|
+fast          |    0.0417|    0.0027|    0.0403|    0.0465|
 ultra_fast    |    0.2371|    0.0150|    0.2296|    0.2640|
 vectorized    |    0.0763|    0.0036|    0.0745|    0.0828|
 

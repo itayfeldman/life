@@ -4,12 +4,13 @@ from pathlib import Path
 
 import numpy as np
 
-from life import logger, LifeState
-
-Patterns = Dict[str, LifeState]
+from life import logger, State
 
 
-def load_pattern_from_cells(file_path: Path) -> LifeState:
+Patterns = Dict[str, State]
+
+
+def load_pattern_from_cells(file_path: Path) -> State:
     """
     Load a pattern from a .cells file.
 
@@ -46,32 +47,33 @@ def load_pattern_from_cells(file_path: Path) -> LifeState:
 
 
 def load_objects_from_pattern_dir(
-    pattern_dir: str, filter: Callable[[object], bool] | None = None
+    pattern_dir: str, suffix: str, filter: Callable[[object], bool] | None = None
 ) -> Patterns:
     """
     Load patterns from .cells files in a pattern_dir and all subdirectories
     """
-    result: Patterns = {}
+    patterns: Patterns = {}
     pattern_dir_path = Path(pattern_dir)
 
-    # Use rglob to recursively find all .cells files
-    for file_path in pattern_dir_path.rglob("*.cells"):
+    for file_path in pattern_dir_path.rglob(suffix):
         try:
-            pattern_name = str(file_path.name[:-6])
+            pattern_name = str(file_path.stem)
             pattern = load_pattern_from_cells(file_path)
             if filter is None or filter(pattern):
-                result[pattern_name] = pattern
+                patterns[pattern_name] = pattern
                 logger.debug(f"Loaded pattern '{pattern_name}' from {file_path}")
         except Exception as e:
             logger.error(f"Error loading pattern from {file_path}: {e}")
 
-    return result
+    return patterns
 
 
 def get_patterns() -> Patterns:
-    pattern_dir = os.path.join(os.path.dirname(__file__), "patterns")
+    pattern_dir_name, suffix = "patterns", "*.cells"
+    pattern_dir = os.path.join(os.path.dirname(__file__), pattern_dir_name)
     return load_objects_from_pattern_dir(
         pattern_dir,
+        suffix,
         lambda obj: isinstance(obj, np.ndarray),
     )
 

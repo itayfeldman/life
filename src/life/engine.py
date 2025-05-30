@@ -3,21 +3,21 @@ import itertools
 import numpy as np
 from scipy.signal import convolve2d
 
-from life import LifeState
+from life import State
 
 
-def convolution(state: LifeState) -> LifeState:
+def convolution(state: State) -> State:
     """
     Calculates the next state of the Game of Life based on the current state using convolution.
 
     Parameters
     ----------
-    state : LifeState
+    state : State
         The current state of the Game of Life.
 
     Returns
     -------
-    LifeState
+    State
         The next state of the Game of Life.
 
     Examples
@@ -26,27 +26,24 @@ def convolution(state: LifeState) -> LifeState:
         >>> convolution(state)
         array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
     """
-    neighbor_count = (
-        convolve2d(state, np.ones((3, 3)), mode="same", boundary="wrap") - state
-    )
-    return np.asarray(
-        (neighbor_count == 3) | ((state == 1) & (neighbor_count == 2)), dtype=np.int8
-    )
+    count = convolve2d(state, np.ones((3, 3)), mode="same", boundary="wrap") - state
+    # Apply Conway's Game of Life rules
+    return np.asarray((count == 3) | ((state == 1) & (count == 2)), dtype=np.int8)
 
 
-def loop(state: LifeState) -> LifeState:
+def loop(state: State) -> State:
     """
     Calculates the next state of the Game of Life based on the current state using a loop.
     This version correctly implements wrapping boundary conditions.
 
     Parameters
     ----------
-    state : LifeState
+    state : State
         The current state of the Game of Life.
 
     Returns
     -------
-    LifeState
+    State
         The next state of the Game of Life.
 
     Examples
@@ -60,7 +57,7 @@ def loop(state: LifeState) -> LifeState:
 
     for r in range(rows):
         for c in range(cols):
-            neighbor_count = 0
+            count = 0
             # Iterate over all 8 neighbors
             for i_offset in range(-1, 2):
                 for j_offset in range(-1, 2):
@@ -70,32 +67,32 @@ def loop(state: LifeState) -> LifeState:
                     # Apply wrapping for neighbors
                     # (r + i_offset + rows) % rows ensures positive result before modulo
                     ni, nj = (r + i_offset + rows) % rows, (c + j_offset + cols) % cols
-                    neighbor_count += state[ni, nj]
+                    count += state[ni, nj]
 
             # Apply Game of Life rules
             if state[r, c] == 1:  # If cell is alive
-                if neighbor_count == 2 or neighbor_count == 3:
+                if count == 2 or count == 3:
                     next_state[r, c] = 1
                 # else: it dies (already 0 in next_state)
             else:  # If cell is dead
-                if neighbor_count == 3:
+                if count == 3:
                     next_state[r, c] = 1
                 # else: it stays dead (already 0 in next_state)
     return next_state
 
 
-def window(state: LifeState) -> LifeState:
+def window(state: State) -> State:
     """
     Calculates the next state of the Game of Life based on the current state.
 
     Parameters
     ----------
-    state: LifeState
+    state: State
         The current state of the Game of Life.
 
     Returns
     -------
-    LifeState
+    State
         The next state of the Game of Life.
 
     Examples
@@ -104,17 +101,16 @@ def window(state: LifeState) -> LifeState:
         >>> window(state)
         array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
     """
-    neighbor_count = sum(
+    count = sum(
         np.roll(np.roll(state, i, 0), j, 1)
         for i, j in itertools.product([-1, 0, 1], repeat=2)
         if (i, j) != (0, 0)
     )
-    return np.asarray(
-        (neighbor_count == 3) | ((state == 1) & (neighbor_count == 2)), dtype=np.int8
-    )
+    # Apply Conway's Game of Life rules
+    return np.asarray((count == 3) | ((state == 1) & (count == 2)), dtype=np.int8)
 
 
-def fast_neighbors(state: LifeState) -> LifeState:
+def fast(state: State) -> State:
     """
     Ultra-fast neighbor counting using NumPy slicing and padding.
 
@@ -123,12 +119,12 @@ def fast_neighbors(state: LifeState) -> LifeState:
 
     Parameters
     ----------
-    state : LifeState
+    state : State
         The current state of the Game of Life.
 
     Returns
     -------
-    LifeState
+    State
         The next state of the Game of Life.
 
     Examples
@@ -141,7 +137,7 @@ def fast_neighbors(state: LifeState) -> LifeState:
     padded = np.pad(state, pad_width=1, mode="wrap")
 
     # Count neighbors using slicing - much faster than loops or convolution
-    neighbors = (
+    count = (
         padded[:-2, :-2]  # top-left
         + padded[:-2, 1:-1]  # top
         + padded[:-2, 2:]  # top-right
@@ -154,12 +150,10 @@ def fast_neighbors(state: LifeState) -> LifeState:
     )
 
     # Apply Conway's Game of Life rules
-    return np.asarray(
-        (neighbors == 3) | ((state == 1) & (neighbors == 2)), dtype=np.int8
-    )
+    return np.asarray((count == 3) | ((state == 1) & (count == 2)), dtype=np.int8)
 
 
-def ultra_fast_neighbors(state: LifeState) -> LifeState:
+def ultra_fast(state: State) -> State:
     """
     Even faster version using pre-allocated arrays and in-place operations.
 
@@ -167,18 +161,18 @@ def ultra_fast_neighbors(state: LifeState) -> LifeState:
 
     Parameters
     ----------
-    state : LifeState
+    state : State
         The current state of the Game of Life.
 
     Returns
     -------
-    LifeState
+    State
         The next state of the Game of Life.
 
     Examples
     --------
         >>> state = np.array([[0, 1, 0], [0, 1, 0], [0, 1, 0]])
-        >>> ultra_fast_neighbors(state)
+        >>> ultra_fast(state)
         array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
     """
     rows, cols = state.shape
@@ -190,7 +184,7 @@ def ultra_fast_neighbors(state: LifeState) -> LifeState:
     right = np.arange(1, cols + 1) % cols
 
     # Count neighbors using advanced indexing
-    neighbors = (
+    count = (
         state[np.ix_(up, left)]  # top-left
         + state[np.ix_(up, np.arange(cols))]  # top
         + state[np.ix_(up, right)]  # top-right
@@ -202,34 +196,32 @@ def ultra_fast_neighbors(state: LifeState) -> LifeState:
     )
 
     # Apply rules
-    return np.asarray(
-        (neighbors == 3) | ((state == 1) & (neighbors == 2)), dtype=np.int8
-    )
+    return np.asarray((count == 3) | ((state == 1) & (count == 2)), dtype=np.int8)
 
 
-def vectorized_neighbors(state: LifeState) -> LifeState:
+def vectorized(state: State) -> State:
     """
     Vectorized approach using np.roll for wrapping boundaries.
     Often the fastest for most grid sizes.
 
     Parameters
     ----------
-    state : LifeState
+    state : State
         The current state of the Game of Life.
 
     Returns
     -------
-    LifeState
+    State
         The next state of the Game of Life.
 
     Examples
     --------
         >>> state = np.array([[0, 1, 0], [0, 1, 0], [0, 1, 0]])
-        >>> vectorized_neighbors(state)
+        >>> vectorized(state)
         array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
     """
     # Pre-compute all 8 neighbor shifts
-    neighbors = (
+    count = (
         np.roll(np.roll(state, -1, axis=0), -1, axis=1)  # top-left
         + np.roll(state, -1, axis=0)  # top
         + np.roll(np.roll(state, -1, axis=0), 1, axis=1)  # top-right
@@ -241,6 +233,4 @@ def vectorized_neighbors(state: LifeState) -> LifeState:
     )
 
     # Apply Conway's rules
-    return np.asarray(
-        (neighbors == 3) | ((state == 1) & (neighbors == 2)), dtype=np.int8
-    )
+    return np.asarray((count == 3) | ((state == 1) & (count == 2)), dtype=np.int8)
