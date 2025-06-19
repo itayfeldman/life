@@ -26,9 +26,10 @@ def convolution(state: State) -> State:
         >>> convolution(state)
         array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
     """
-    count = convolve2d(state, np.ones((3, 3)), mode="same", boundary="wrap") - state
-    # Apply Conway's Game of Life rules
-    return np.asarray((count == 3) | ((state == 1) & (count == 2)), dtype=np.int8)
+    new_state = convolve2d(state, np.ones((3, 3)), mode="same", boundary="wrap") - state
+    return np.asarray(
+        (new_state == 3) | ((state == 1) & (new_state == 2)), dtype=np.int8
+    )
 
 
 def loop(state: State) -> State:
@@ -57,7 +58,7 @@ def loop(state: State) -> State:
 
     for r in range(rows):
         for c in range(cols):
-            count = 0
+            new_state = 0
             # Iterate over all 8 neighbors
             for i_offset in range(-1, 2):
                 for j_offset in range(-1, 2):
@@ -67,15 +68,15 @@ def loop(state: State) -> State:
                     # Apply wrapping for neighbors
                     # (r + i_offset + rows) % rows ensures positive result before modulo
                     ni, nj = (r + i_offset + rows) % rows, (c + j_offset + cols) % cols
-                    count += state[ni, nj]
+                    new_state += state[ni, nj]
 
             # Apply Game of Life rules
             if state[r, c] == 1:  # If cell is alive
-                if count == 2 or count == 3:
+                if new_state == 2 or new_state == 3:
                     next_state[r, c] = 1
                 # else: it dies (already 0 in next_state)
             else:  # If cell is dead
-                if count == 3:
+                if new_state == 3:
                     next_state[r, c] = 1
                 # else: it stays dead (already 0 in next_state)
     return next_state
@@ -101,20 +102,21 @@ def window(state: State) -> State:
         >>> window(state)
         array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
     """
-    count = sum(
+    new_state = sum(
         np.roll(np.roll(state, i, 0), j, 1)
         for i, j in itertools.product([-1, 0, 1], repeat=2)
         if (i, j) != (0, 0)
     )
-    # Apply Conway's Game of Life rules
-    return np.asarray((count == 3) | ((state == 1) & (count == 2)), dtype=np.int8)
+    return np.asarray(
+        (new_state == 3) | ((state == 1) & (new_state == 2)), dtype=np.int8
+    )
 
 
 def fast(state: State) -> State:
     """
     Ultra-fast neighbor counting using NumPy slicing and padding.
 
-    This method uses array slicing to count neighbors without convolution
+    This method uses array slicing to new_state neighbors without convolution
     or rolling operations, making it very cache-friendly and fast.
 
     Parameters
@@ -137,7 +139,7 @@ def fast(state: State) -> State:
     padded = np.pad(state, pad_width=1, mode="wrap")
 
     # Count neighbors using slicing - much faster than loops or convolution
-    count = (
+    new_state = (
         padded[:-2, :-2]  # top-left
         + padded[:-2, 1:-1]  # top
         + padded[:-2, 2:]  # top-right
@@ -149,8 +151,9 @@ def fast(state: State) -> State:
         + padded[2:, 2:]  # bottom-right
     )
 
-    # Apply Conway's Game of Life rules
-    return np.asarray((count == 3) | ((state == 1) & (count == 2)), dtype=np.int8)
+    return np.asarray(
+        (new_state == 3) | ((state == 1) & (new_state == 2)), dtype=np.int8
+    )
 
 
 def ultra_fast(state: State) -> State:
@@ -184,7 +187,7 @@ def ultra_fast(state: State) -> State:
     right = np.arange(1, cols + 1) % cols
 
     # Count neighbors using advanced indexing
-    count = (
+    new_state = (
         state[np.ix_(up, left)]  # top-left
         + state[np.ix_(up, np.arange(cols))]  # top
         + state[np.ix_(up, right)]  # top-right
@@ -195,8 +198,9 @@ def ultra_fast(state: State) -> State:
         + state[np.ix_(down, right)]  # bottom-right
     )
 
-    # Apply rules
-    return np.asarray((count == 3) | ((state == 1) & (count == 2)), dtype=np.int8)
+    return np.asarray(
+        (new_state == 3) | ((state == 1) & (new_state == 2)), dtype=np.int8
+    )
 
 
 def vectorized(state: State) -> State:
@@ -221,7 +225,7 @@ def vectorized(state: State) -> State:
         array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
     """
     # Pre-compute all 8 neighbor shifts
-    count = (
+    new_state = (
         np.roll(np.roll(state, -1, axis=0), -1, axis=1)  # top-left
         + np.roll(state, -1, axis=0)  # top
         + np.roll(np.roll(state, -1, axis=0), 1, axis=1)  # top-right
@@ -232,5 +236,6 @@ def vectorized(state: State) -> State:
         + np.roll(np.roll(state, 1, axis=0), 1, axis=1)  # bottom-right
     )
 
-    # Apply Conway's rules
-    return np.asarray((count == 3) | ((state == 1) & (count == 2)), dtype=np.int8)
+    return np.asarray(
+        (new_state == 3) | ((state == 1) & (new_state == 2)), dtype=np.int8
+    )

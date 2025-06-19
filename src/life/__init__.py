@@ -7,15 +7,15 @@ from numpy.typing import NDArray
 from dotenv import dotenv_values
 
 # Relevant type aliases
+ConfigFile = dict[str, str | None]
 State = NDArray[int8]
 StateIterator = Iterator[State]
 StateUpdater = Callable[[State], State]
 
-DEVELOP = False
-
 # Load development variables
+DEVELOP = False
 envfile = "dev.env" if DEVELOP else ".env"
-config: dict[str, str | None] = {**dotenv_values(dotenv_path=envfile)}
+config: ConfigFile = {**dotenv_values(dotenv_path=envfile)}
 
 # Load logging configuration
 fileConfig(fname="logging.conf")
