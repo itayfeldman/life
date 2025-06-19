@@ -18,19 +18,19 @@ pip install -e life
 ```
 
 
-## To Run
+## Run
 
 In linux or macOS, you can run the script from the command line:
 
 ```bash
-%\> ./life/scripts/run.sh --size 100 --seed noise --interval 350 --cmap binary --figsize 8 --func fast
+life/scripts/run.sh --size 100 --seed noise --interval 350 --cmap binary --figsize 8 --func fast
 ```
 
 You can also run the module directly using Python:
 
 ```bash
 source life/bin/activate  # On Windows use `life\Scripts\activate`
-%\> python -m life --size 100 --seed noise --interval 350 --cmap binary --figsize 8 --func fast
+python -m life --size 100 --seed noise --interval 350 --cmap binary --figsize 8 --func fast
 ```
 
 
