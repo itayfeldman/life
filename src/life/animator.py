@@ -41,7 +41,7 @@ class Animator:
 
         return animation.FuncAnimation(
             fig=fig,
-            func=lambda _: [im.set_data(self.life.state)],
+            func=lambda frame: (im.set_data(self.life.state), [im])[1],
             frames=self.life,
             interval=self.interval,
             cache_frame_data=False,

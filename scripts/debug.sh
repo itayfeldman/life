@@ -13,8 +13,6 @@
 
 # Activate the virtual environment. This assumes your virtual env is in ~/.virtualenvs/life
 source ~/.virtualenvs/life/bin/activate
-
-cd ~/Code/Projects/life
 python -Xfrozen_modules=off -m debugpy --listen localhost:5678 --wait-for-client -m life "$@"
 
 # Optionally, deactivate at the end of the script

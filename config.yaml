@@ -1,0 +1,3 @@
+name: base
+develop: False
+log_level: DEBUG

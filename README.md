@@ -7,8 +7,9 @@ A NumPy-oriented implementation of [Conway's Game of Life](https://conwaylife.co
 
 ## Setup
 
-To run the code, you need to have Python 3.7+ and create a virtual environment. You can use `venv` or `conda` for this.  Install the required packages using `pip`:
+To run the code, you need to have Python 3.7+ and create a virtual environment. You can use `venv` or `conda` for this.  Install the required packages using `pip`.
 
+From the parent directory of this repository, run the following commands:
 ```bash
 python -m venv life
 source life/bin/activate  # On Windows use `life\Scripts\activate`
@@ -20,13 +21,13 @@ pip install -e life
 
 ## Run
 
-In linux or macOS, you can run the script from the command line:
+In linux or macOS, from the root directory of this repository you can run the script from the command line:
 
 ```bash
-life/scripts/run.sh --size 100 --seed noise --interval 350 --cmap binary --figsize 8 --func fast
+scripts/run.sh --size 100 --seed noise --interval 350 --cmap binary --figsize 8 --func fast
 ```
 
-You can also run the module directly using Python:
+You can also run the module directly using Python.  From the root directory of this repository, run:
 
 ```bash
 source life/bin/activate  # On Windows use `life\Scripts\activate`

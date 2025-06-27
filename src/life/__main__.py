@@ -1,14 +1,13 @@
 from argparse import ArgumentParser
 
 import matplotlib.pyplot as plt
+
 from life.animator import Animator
 from life.engine import *
 from life.life import Life
 
 parser = ArgumentParser()
-parser.add_argument("--size", type=int, default=100)
-parser.add_argument("--seed", type=str, default="noise")
-parser.add_argument("--interval", type=int, default=350)
+
 parser.add_argument("--cmap", type=str, default="binary")
 parser.add_argument("--figsize", type=int, default=8)
 parser.add_argument(
@@ -24,6 +23,10 @@ parser.add_argument(
         "vectorized",
     ],
 )
+parser.add_argument("--interval", type=int, default=350)
+parser.add_argument("--seed", type=str, default="noise")
+parser.add_argument("--size", type=int, default=100)
+
 args = parser.parse_args()
 
 life = Life(size=args.size, seed=args.seed, func=eval(args.func))

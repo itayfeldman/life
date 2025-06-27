@@ -1,15 +1,12 @@
 import os
-from typing import Callable, Dict
-from pathlib import Path
-
-import numpy as np
 from importlib import import_module
 import inspect
+from pathlib import Path
+from typing import Callable
 
-from life import logger, State
+import numpy as np
 
-
-Patterns = Dict[str, State]
+from life import logger, Patterns, State
 
 
 def load_pattern_from_cells(file_path: Path) -> State:
@@ -45,7 +42,7 @@ def load_pattern_from_cells(file_path: Path) -> State:
     return pattern
 
 
-def load_pattern_from_ndarray(file_path: Path) -> State:
+def load_pattern_from_ndarray(file_path: Path) -> State | None:
     module = import_module(str(file_path))
     for item in inspect.getmembers(module):
         if isinstance(item, np.ndarray):
@@ -65,9 +62,9 @@ def load_objects_from_pattern_dir(
             pattern = file_types[suffix](file_path)
             if filter is None or filter(pattern):
                 patterns[str(file_path.stem)] = pattern
-                logger.debug(f"Loaded pattern from {file_path}")
+                logger.debug(f"Loaded pattern {file_path.stem}")
         except Exception as e:
-            logger.error(f"Error loading pattern from {file_path}: {e}")
+            logger.error(f"Error loading pattern from {file_path.stem}: {e}")
     return patterns
 
 

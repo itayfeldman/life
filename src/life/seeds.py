@@ -6,6 +6,7 @@ from life.tiles import TileMaker, TilePattern
 
 
 class SeedGenerators:
+
     @staticmethod
     def symmetric(n: int) -> State:
         """
