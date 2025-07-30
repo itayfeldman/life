@@ -1,0 +1,8 @@
+!Name: R-pentomino
+!Author: John Conway
+!A 5-cell methuselah that stabilizes after 1103 generations
+!www.conwaylife.com/wiki/index.php?title=R-pentomino
+.OO
+OO.
+.O.
+

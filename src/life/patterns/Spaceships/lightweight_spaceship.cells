@@ -1,0 +1,9 @@
+!Name: Lightweight spaceship (LWSS)
+!Author: John Conway
+!The smallest orthogonal spaceship
+!www.conwaylife.com/wiki/index.php?title=Lightweight_spaceship
+.O..O
+O....
+O...O
+OOOO.
+

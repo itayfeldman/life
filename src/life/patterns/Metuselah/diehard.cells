@@ -1,0 +1,8 @@
+!Name: Diehard
+!Author: Bill Gosper
+!A 7-cell pattern that dies after 130 generations
+!www.conwaylife.com/wiki/index.php?title=Diehard
+......O.
+OO......
+.O...OOO
+

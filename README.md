@@ -1,49 +1,218 @@
-# life
+# Conway's Game of Life 🧬
 
-## What is this?
+A high-performance, feature-rich implementation of [Conway's Game of Life](https://conwaylife.com/) with multiple algorithms, extensive pattern library, and enhanced visualization capabilities.
 
-A NumPy-oriented implementation of [Conway's Game of Life](https://conwaylife.com/).
+## ✨ Features
 
+- **6 Optimized Algorithms**: From simple loops to ultra-fast NumPy implementations
+- **Rich Pattern Library**: Classic patterns including gliders, oscillators, spaceships, and more
+- **Enhanced Visualization**: Statistics tracking, population graphs, and interactive controls
+- **Comprehensive Testing**: Full test coverage for reliability
+- **Type Safety**: Complete type hints for better development experience
+- **Flexible Seeding**: Noise, symmetric, and pattern-based initialization
 
-## Setup
+## 🚀 Quick Start
 
-To run the code, you need to have Python 3.7+ and create a virtual environment. You can use `venv` or `conda` for this.  Install the required packages using `pip`:
+### Installation
 
 ```bash
-python -m venv life
-source life/bin/activate  # On Windows use `life\Scripts\activate`
+# Clone the repository
+git clone https://github.com/itayfeldman/life.git
+cd life
 
-pip install -r life/src/life/requirements.txt
-pip install -e life
+# Create virtual environment
+python -m venv life_env
+source life_env/bin/activate  # On Windows: life_env\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+pip install -e .
 ```
 
-
-## Run
-
-In linux or macOS, you can run the script from the command line:
+### Basic Usage
 
 ```bash
-life/scripts/run.sh --size 100 --seed noise --interval 350 --cmap binary --figsize 8 --func fast
+# Run with default settings
+python -m life
+
+# Use enhanced visualizer with statistics
+python -m life --enhanced --show-grid
+
+# Try different patterns
+python -m life --seed glider --enhanced
+python -m life --seed acorn --size 150 --enhanced
+
+# Compare algorithms
+python -m life --func ultra_fast --size 200
 ```
 
-You can also run the module directly using Python:
+## 📊 Algorithm Performance
+
+Benchmark results for 100×100 grid, 1000 generations:
+
+| Algorithm     | Mean (s) | StdDev   | Min (s)  | Max (s)  | Description |
+|---------------|----------|----------|----------|----------|-------------|
+| **fast**      | 0.0417   | 0.0027   | 0.0403   | 0.0465   | ⚡ Fastest - NumPy slicing |
+| vectorized    | 0.0763   | 0.0036   | 0.0745   | 0.0828   | 🔄 np.roll operations |
+| window        | 0.0920   | 0.0027   | 0.0894   | 0.0964   | 🪟 Rolling window approach |
+| ultra_fast    | 0.2371   | 0.0150   | 0.2296   | 0.2640   | 🎯 Advanced indexing |
+| convolution   | 0.2436   | 0.0062   | 0.2355   | 0.2509   | 🧮 SciPy convolution |
+| loop          | 20.6971  | 0.2437   | 20.3488  | 20.9214  | 🐌 Pure Python loops |
+
+## 🎮 Usage Examples
+
+### Command Line Options
 
 ```bash
-source life/bin/activate  # On Windows use `life\Scripts\activate`
+# Basic options
 python -m life --size 100 --seed noise --interval 350 --cmap binary --figsize 8 --func fast
+
+# Enhanced visualizer options
+python -m life --enhanced --show-grid --title "My Life Simulation"
+python -m life --enhanced --no-stats  # Hide statistics panel
+
+# Pattern examples
+python -m life --seed glider --enhanced
+python -m life --seed lightweight_spaceship --size 50 --enhanced
+python -m life --seed acorn --size 200 --interval 100 --enhanced
 ```
 
+### Available Patterns
 
-## Usage
+#### 🚀 Spaceships
+- `glider` - The classic moving pattern
+- `lightweight_spaceship` - Fast orthogonal spaceship
+- `middleweight_spaceship` - Medium-sized spaceship  
+- `heavyweight_spaceship` - Large spaceship
 
-The program can take a few command line arguments:
+#### 🔄 Oscillators
+- `blinker` - Simple period-2 oscillator
+- `toad` - Period-2 oscillator
+- `beacon` - Period-2 oscillator
+- `clock` - Period-2 oscillator
+- `pulsar` - Period-3 oscillator
 
-* `--size`: the size of the grid (default: 100, min: 10, max: 1000)
-* `--seed`: the seed for the random number generator (default: noise)
-* `--interval`: the interval between generations in milliseconds (default: 350)
-* `--cmap`: the matplotlib [color map](https://matplotlib.org/stable/users/explain/colors/colormaps.html) to use (default: 'binary')
-* `--figsize`: the size of the figure (default: 8)
-* `--func`: the function to use (default: fast - see below for options)
+#### 🏠 Still Lifes
+- `block` - 2×2 stable pattern
+- `beehive` - 6-cell stable pattern
+- `loaf` - 7-cell stable pattern
+- `boat` - 5-cell stable pattern
+
+#### 🌱 Methuselahs
+- `acorn` - Evolves for 5,206 generations
+- `diehard` - Dies after 130 generations
+- `rpentomino` - Stabilizes after 1,103 generations
+
+### Programmatic Usage
+
+```python
+from life.life import Life
+from life.engine import fast
+from life.visualizer import EnhancedVisualizer
+
+# Create a Life instance
+life = Life(size=100, seed="glider", func=fast)
+
+# Use enhanced visualizer
+visualizer = EnhancedVisualizer(
+    life=life,
+    show_stats=True,
+    show_grid=True,
+    title="Glider Demo"
+)
+animation = visualizer.animate()
+
+# Get statistics
+stats = visualizer.get_statistics()
+print(f"Generation: {stats['generation']}")
+print(f"Population: {stats['current_population']}")
+```
+
+## 🧪 Testing
+
+Run the comprehensive test suite:
+
+```bash
+# Run all tests
+pytest
+
+# Run specific test files
+pytest tests/test_engine.py
+pytest tests/test_patterns.py
+pytest tests/test_seeds.py
+
+# Run with coverage
+pytest --cov=life tests/
+```
+
+## 🎨 Enhanced Visualizer Features
+
+The enhanced visualizer (`--enhanced` flag) includes:
+
+- **📈 Real-time Statistics**: Generation counter and population tracking
+- **📊 Population Graph**: Historical population visualization
+- **⌨️ Interactive Controls**:
+  - `SPACE`: Pause/Resume animation
+  - `S`: Save current frame as PNG
+  - `Q`: Quit application
+- **🎯 Grid Lines**: Optional grid overlay (`--show-grid`)
+- **💾 Export Capabilities**: Save frames and animations
+
+## 🔧 Development
+
+### Project Structure
+
+```
+life/
+├── src/life/
+│   ├── engine.py          # Core algorithms
+│   ├── life.py           # Main Life class
+│   ├── visualizer.py     # Enhanced visualization
+│   ├── animator.py       # Original animator
+│   ├── seeds.py          # Seed generation
+│   ├── pattern_factory.py # Pattern loading
+│   └── patterns/         # Pattern library
+│       ├── Spaceships/
+│       ├── Oscillators/
+│       ├── StillLifes/
+│       ├── Metuselah/
+│       └── ...
+├── tests/                # Comprehensive test suite
+└── scripts/              # Utility scripts
+```
+
+### Adding New Patterns
+
+Create a `.cells` file in the appropriate pattern directory:
+
+```
+!Name: My Pattern
+!Author: Your Name
+!Description: Pattern description
+.O.
+O.O
+.O.
+```
+
+## 📚 Algorithm Details
+
+### Fast Algorithm (Recommended)
+Uses NumPy array slicing with padding for optimal performance:
+- Memory efficient with minimal allocations
+- Cache-friendly access patterns
+- Handles boundary wrapping correctly
+
+### Vectorized Algorithm
+Employs `np.roll` operations for neighbor counting:
+- Good balance of speed and readability
+- Excellent for educational purposes
+- Handles wrapping naturally
+
+### Other Algorithms
+- **Convolution**: Uses SciPy's `convolve2d`
+- **Window**: Rolling window approach
+- **Ultra Fast**: Advanced NumPy indexing
+- **Loop**: Pure Python for reference
 
 
 ## Performance
