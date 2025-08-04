@@ -2,7 +2,7 @@ import os
 from importlib import import_module
 import inspect
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Dict
 
 import numpy as np
 
@@ -28,21 +28,19 @@ def load_pattern_from_cells(file_path: Path) -> State:
     if not lines:
         raise ValueError(f"No pattern data found in {file_path}")
 
-    # Determine dimensions
     max_width = max(len(line) for line in lines)
     height = len(lines)
-
-    # Create pattern array
     pattern = np.zeros((height, max_width), dtype=np.int8)
 
     for i, line in enumerate(lines):
-        for j, char in enumerate(line):
+        for j, char in enumerate(line.ljust(max_width, ".")):
             if char == "O":
                 pattern[i, j] = 1
+
     return pattern
 
 
-def load_pattern_from_ndarray(file_path: Path) -> State | None:
+def load_pattern_from_ndarray(file_path: Path) -> State:
     module = import_module(str(file_path))
     for item in inspect.getmembers(module):
         if isinstance(item, np.ndarray):
@@ -59,7 +57,7 @@ def load_objects_from_pattern_dir(
 
     for file_path in pattern_dir_path.rglob("*." + suffix):
         try:
-            pattern = file_types[suffix](file_path)
+            pattern: State = file_types[suffix](file_path)
             if filter is None or filter(pattern):
                 patterns[str(file_path.stem)] = pattern
                 logger.debug(f"Loaded pattern {file_path.stem}")
@@ -80,7 +78,7 @@ def get_patterns(
     return patterns
 
 
-file_types = {
+file_types: Dict[str, Callable[[Path], State]] = {
     "cells": load_pattern_from_cells,
     "py": load_pattern_from_ndarray,
 }

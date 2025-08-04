@@ -1,6 +1,6 @@
 import logging
 from logging.config import dictConfig
-from typing import Callable, Iterator, Dict
+from typing import Callable, Iterator, Dict, Tuple
 
 from dotenv import dotenv_values
 import yaml
@@ -8,23 +8,24 @@ from numpy import int8
 from numpy.typing import NDArray
 
 # Relevant type aliases
-ConfigDict = Dict[str, str | None]
-State = NDArray[int8]
-StateIterator = Iterator[State]
-StateUpdater = Callable[[State], State]
-Patterns = Dict[str, State]
+type Config = Dict[str, str | None]
+type ArrayShape = Tuple[int, int]
+type State = NDArray[int8]
+type StateIterator = Iterator[State]
+type StateUpdater = Callable[[State], State]
+type Patterns = Dict[str, State]
 
-# Load config
-with open("config.yaml") as f:
-    config: ConfigDict = yaml.safe_load(f)
+# Load project config
+with open("config.yaml") as cfg:
+    config: Config = yaml.safe_load(cfg)
 
-# Load development variables
+# Load environment variables
 env_file: str = "dev.env" if config["develop"] else ".env"
-env_variables: ConfigDict = {**dotenv_values(dotenv_path=env_file)}
+env_variables: Config = {**dotenv_values(dotenv_path=env_file)}
 
 # Load logging config
-with open("logging.yaml", "r") as f:
-    logging_config: ConfigDict = yaml.safe_load(f)
+with open("logging.yaml", "r") as cfg:
+    logging_config: Config = yaml.safe_load(cfg)
 dictConfig(logging_config)
 logger: logging.Logger = logging.getLogger(name=__name__)
 

@@ -5,6 +5,7 @@ from life.pattern_factory import patterns
 from life.tiles import TileMaker, TilePattern
 
 
+# TODO: Convert class to a function
 class SeedGenerators:
 
     @staticmethod

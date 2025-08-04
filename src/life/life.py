@@ -30,13 +30,5 @@ class Life:
         return self
 
     def __next__(self) -> State:
-        """
-        Advances the simulation by one step and returns the new state.
-
-        Returns
-        -------
-        State
-            The updated state after applying the life rules.
-        """
         self.state = self.func(self.state)
         return self.state

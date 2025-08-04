@@ -1,13 +1,11 @@
 import random
-from typing import Tuple
 
 import numpy as np
 
-from life import State
-
-ArrayShape = Tuple[int, int]
+from life import State, ArrayShape
 
 
+# TODO: Convert to a function
 class TileMaker:
     """Static methods for generating random binary tiles"""
 
@@ -48,6 +46,7 @@ class TileMaker:
         return np.triu(np.where(tri, 0, 1)).T * tri
 
 
+# TODO: Convert to a function
 class TilePattern:
     """Static methods for tiling an array with different symmetries"""
 
