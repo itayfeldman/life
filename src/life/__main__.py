@@ -32,9 +32,6 @@ parser.add_argument(
 )
 
 # Enhanced visualization arguments
-parser.add_argument("--theme", type=str, default="default", 
-                   choices=["default", "neon", "matrix", "ocean", "fire", "cyber"],
-                   help="Visual theme")
 parser.add_argument("--show-grid", action="store_true", help="Show grid lines")
 parser.add_argument("--show-stats", action="store_true", help="Show statistics overlay")
 parser.add_argument("--fullscreen", action="store_true", help="Run in fullscreen mode")
@@ -52,13 +49,8 @@ animator = Animator(
     interval=args.interval, 
     figsize=args.figsize,
     show_grid=args.show_grid,
-    show_stats=args.show_stats,
-    theme=args.theme
+    show_stats=args.show_stats
 )
-
-# Setup matplotlib style
-if args.theme != 'default':
-    plt.style.use('dark_background')
 
 # Create animation
 ani = animator()
@@ -75,7 +67,7 @@ if args.fullscreen:
             pass  # Backend doesn't support fullscreen
 
 print(f"🎮 Conway's Game of Life - Enhanced Edition")
-print(f"📊 Size: {args.size}x{args.size} | Theme: {args.theme} | Function: {args.func}")
+print(f"📊 Size: {args.size}x{args.size} | Colormap: {args.cmap} | Function: {args.func}")
 print(f"🎨 Grid: {'ON' if args.show_grid else 'OFF'} | Stats: {'ON' if args.show_stats else 'OFF'}")
 print(f"⚡ Press Ctrl+C to stop")
 
