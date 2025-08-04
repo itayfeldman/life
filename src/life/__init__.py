@@ -15,7 +15,11 @@ StateUpdater = Callable[[State], State]
 # Load development variables
 DEVELOP = False
 envfile = "dev.env" if DEVELOP else ".env"
-config: ConfigFile = {**dotenv_values(dotenv_path=envfile)}
+try:
+    config: ConfigFile = {**dotenv_values(dotenv_path=envfile)}
+except Exception:
+    # Handle parsing errors gracefully (e.g., GitHub Actions syntax in .env)
+    config: ConfigFile = {}
 
 # Load logging configuration
 fileConfig(fname="logging.conf")
