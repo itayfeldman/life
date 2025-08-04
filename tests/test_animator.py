@@ -37,7 +37,6 @@ class TestAnimator(unittest.TestCase):
         self.assertEqual(animator.cmap, "binary")
         self.assertEqual(animator.interval, 100)
         self.assertEqual(animator.figsize, 5)
-        self.assertFalse(animator.show_grid)
         self.assertFalse(animator.show_stats)
         self.assertEqual(animator.theme, 'default')
         self.assertEqual(animator.generation, 0)
@@ -51,12 +50,10 @@ class TestAnimator(unittest.TestCase):
             cmap="viridis",
             interval=200,
             figsize=8,
-            show_grid=True,
             show_stats=True,
             theme='matrix'
         )
         
-        self.assertTrue(animator.show_grid)
         self.assertTrue(animator.show_stats)
         self.assertEqual(animator.theme, 'matrix')
         # Theme should override cmap
@@ -147,39 +144,6 @@ class TestAnimator(unittest.TestCase):
         # Should be limited to 10
         self.assertLessEqual(len(self.default_animator.fps_counter), 10)
 
-    @patch('matplotlib.pyplot.subplots')
-    def test_draw_grid_small_grid(self, mock_subplots):
-        """Test grid drawing for small grids."""
-        mock_fig = Mock()
-        mock_ax = Mock()
-        mock_subplots.return_value = (mock_fig, mock_ax)
-        
-        # Test with small grid (should draw grid)
-        small_shape = (20, 20)  # Less than 50
-        self.default_animator._draw_grid(mock_ax, small_shape)
-        
-        # Should have called axhline and axvline
-        self.assertTrue(mock_ax.axhline.called)
-        self.assertTrue(mock_ax.axvline.called)
-        
-        # Should have correct number of calls (21 lines for 20x20 grid)
-        self.assertEqual(mock_ax.axhline.call_count, 21)
-        self.assertEqual(mock_ax.axvline.call_count, 21)
-
-    @patch('matplotlib.pyplot.subplots')
-    def test_draw_grid_large_grid(self, mock_subplots):
-        """Test grid drawing for large grids."""
-        mock_fig = Mock()
-        mock_ax = Mock()
-        mock_subplots.return_value = (mock_fig, mock_ax)
-        
-        # Test with large grid (should not draw grid)
-        large_shape = (100, 100)  # Greater than 50
-        self.default_animator._draw_grid(mock_ax, large_shape)
-        
-        # Should not have called axhline or axvline
-        self.assertFalse(mock_ax.axhline.called)
-        self.assertFalse(mock_ax.axvline.called)
 
     @patch('matplotlib.pyplot.subplots')
     @patch('matplotlib.animation.FuncAnimation')
@@ -239,33 +203,6 @@ class TestAnimator(unittest.TestCase):
         call_args = mock_animation.call_args[1]
         self.assertEqual(call_args['blit'], False)
 
-    @patch('matplotlib.pyplot.subplots')
-    @patch('matplotlib.animation.FuncAnimation')
-    def test_call_method_with_grid(self, mock_animation, mock_subplots):
-        """Test the __call__ method with grid enabled."""
-        mock_fig = Mock()
-        mock_ax = Mock()
-        mock_subplots.return_value = (mock_fig, mock_ax)
-        mock_im = Mock()
-        mock_ax.imshow.return_value = mock_im
-        mock_anim = Mock()
-        mock_animation.return_value = mock_anim
-        
-        # Use small size so grid will be drawn
-        small_life = Life(size=20, seed="noise", func=fast)
-        grid_animator = Animator(
-            life=small_life,
-            cmap="binary",
-            interval=100,
-            figsize=5,
-            show_grid=True
-        )
-        
-        result = grid_animator()
-        
-        # Grid drawing should be called
-        self.assertTrue(mock_ax.axhline.called)
-        self.assertTrue(mock_ax.axvline.called)
 
     def test_theme_background_colors(self):
         """Test that different themes set appropriate background colors."""

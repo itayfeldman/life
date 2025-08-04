@@ -56,7 +56,7 @@ class TestMainModule(unittest.TestCase):
         
         expected_args = [
             'size', 'seed', 'interval', 'cmap', 'figsize', 
-            'func', 'theme', 'show_grid', 'show_stats', 'fullscreen'
+            'func', 'theme', 'show_stats', 'fullscreen'
         ]
         
         for expected_arg in expected_args:
@@ -127,7 +127,7 @@ class TestMainModule(unittest.TestCase):
         
         parser = main_module.parser
         
-        boolean_args = ['show_grid', 'show_stats', 'fullscreen']
+        boolean_args = ['show_stats', 'fullscreen']
         
         for arg_name in boolean_args:
             action = None
@@ -161,7 +161,6 @@ class TestMainModule(unittest.TestCase):
                 self.assertEqual(args.figsize, 8)
                 self.assertEqual(args.func, "fast")
                 self.assertEqual(args.theme, "default")
-                self.assertFalse(args.show_grid)
                 self.assertFalse(args.show_stats)
                 self.assertFalse(args.fullscreen)
                 
