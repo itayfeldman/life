@@ -1,6 +1,7 @@
 import logging
 from logging.config import fileConfig
 from typing import Callable, Iterator
+from pathlib import Path
 
 from numpy import int8
 from numpy.typing import NDArray
@@ -18,7 +19,13 @@ envfile = "dev.env" if DEVELOP else ".env"
 config: ConfigFile = {**dotenv_values(dotenv_path=envfile)}
 
 # Load logging configuration
-fileConfig(fname="logging.conf")
+_project_root = Path(__file__).resolve().parent.parent.parent
+_logging_conf = _project_root / "logging.conf"
+if _logging_conf.exists():
+    fileConfig(fname=str(_logging_conf))
+else:
+    logging.basicConfig(level=logging.INFO)
+
 logger: logging.Logger = logging.getLogger(name=__name__)
 
 # Set logging level from config

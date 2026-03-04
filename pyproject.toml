@@ -13,7 +13,7 @@ authors = [
 ]
 readme = "README.md"
 license = { text = "LICENSE" }
-requires-python = ">= 3.7"
+requires-python = ">= 3.10"
 keywords = ["automata"]
 classifiers = [
     # How mature is this project? Common values are
@@ -30,9 +30,6 @@ classifiers = [
 
     # Specify the Python versions you support here.
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",

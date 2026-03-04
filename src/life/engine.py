@@ -6,6 +6,31 @@ from scipy.signal import convolve2d
 from life import State
 
 
+def _apply_rules(neighbors: State, state: State) -> State:
+    """
+    Apply Conway's Game of Life rules.
+
+    A cell is alive in the next generation if:
+    - It has exactly 3 neighbors (birth), OR
+    - It is currently alive AND has exactly 2 neighbors (survival)
+
+    Parameters
+    ----------
+    neighbors : State
+        The neighbor count for each cell.
+    state : State
+        The current state of the Game of Life.
+
+    Returns
+    -------
+    State
+        The next state with rules applied.
+    """
+    return np.asarray(
+        (neighbors == 3) | ((state == 1) & (neighbors == 2)), dtype=np.int8
+    )
+
+
 def convolution(state: State) -> State:
     """
     Calculates the next state of the Game of Life based on the current state using convolution.
@@ -26,10 +51,10 @@ def convolution(state: State) -> State:
         >>> convolution(state)
         array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
     """
-    new_state = convolve2d(state, np.ones((3, 3)), mode="same", boundary="wrap") - state
-    return np.asarray(
-        (new_state == 3) | ((state == 1) & (new_state == 2)), dtype=np.int8
+    neighbors: int = (
+        convolve2d(state, np.ones((3, 3)), mode="same", boundary="wrap") - state
     )
+    return _apply_rules(neighbors, state)
 
 
 def loop(state: State) -> State:
@@ -102,21 +127,19 @@ def window(state: State) -> State:
         >>> window(state)
         array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
     """
-    new_state = sum(
+    neighbors = sum(
         np.roll(np.roll(state, i, 0), j, 1)
         for i, j in itertools.product([-1, 0, 1], repeat=2)
         if (i, j) != (0, 0)
     )
-    return np.asarray(
-        (new_state == 3) | ((state == 1) & (new_state == 2)), dtype=np.int8
-    )
+    return _apply_rules(neighbors, state)
 
 
 def fast(state: State) -> State:
     """
     Ultra-fast neighbor counting using NumPy slicing and padding.
 
-    This method uses array slicing to new_state neighbors without convolution
+    This method uses array slicing to count neighbors without convolution
     or rolling operations, making it very cache-friendly and fast.
 
     Parameters
@@ -132,14 +155,14 @@ def fast(state: State) -> State:
     Examples
     --------
         >>> state = np.array([[0, 1, 0], [0, 1, 0], [0, 1, 0]])
-        >>> fast_neighbors(state)
+        >>> fast(state)
         array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
     """
     # Pad the array with zeros to handle edge cases
     padded = np.pad(state, pad_width=1, mode="wrap")
 
     # Count neighbors using slicing - much faster than loops or convolution
-    new_state = (
+    neighbors = (
         padded[:-2, :-2]  # top-left
         + padded[:-2, 1:-1]  # top
         + padded[:-2, 2:]  # top-right
@@ -151,9 +174,7 @@ def fast(state: State) -> State:
         + padded[2:, 2:]  # bottom-right
     )
 
-    return np.asarray(
-        (new_state == 3) | ((state == 1) & (new_state == 2)), dtype=np.int8
-    )
+    return _apply_rules(neighbors, state)
 
 
 def ultra_fast(state: State) -> State:
@@ -187,7 +208,7 @@ def ultra_fast(state: State) -> State:
     right = np.arange(1, cols + 1) % cols
 
     # Count neighbors using advanced indexing
-    new_state = (
+    neighbors = (
         state[np.ix_(up, left)]  # top-left
         + state[np.ix_(up, np.arange(cols))]  # top
         + state[np.ix_(up, right)]  # top-right
@@ -198,9 +219,7 @@ def ultra_fast(state: State) -> State:
         + state[np.ix_(down, right)]  # bottom-right
     )
 
-    return np.asarray(
-        (new_state == 3) | ((state == 1) & (new_state == 2)), dtype=np.int8
-    )
+    return _apply_rules(neighbors, state)
 
 
 def vectorized(state: State) -> State:
@@ -225,7 +244,7 @@ def vectorized(state: State) -> State:
         array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
     """
     # Pre-compute all 8 neighbor shifts
-    new_state = (
+    neighbors = (
         np.roll(np.roll(state, -1, axis=0), -1, axis=1)  # top-left
         + np.roll(state, -1, axis=0)  # top
         + np.roll(np.roll(state, -1, axis=0), 1, axis=1)  # top-right
@@ -236,6 +255,7 @@ def vectorized(state: State) -> State:
         + np.roll(np.roll(state, 1, axis=0), 1, axis=1)  # bottom-right
     )
 
-    return np.asarray(
-        (new_state == 3) | ((state == 1) & (new_state == 2)), dtype=np.int8
-    )
+    return _apply_rules(neighbors, state)
+
+
+__all__ = ["convolution", "loop", "window", "fast", "ultra_fast", "vectorized"]

@@ -45,25 +45,26 @@ def load_pattern_from_cells(file_path: Path) -> State:
     return pattern
 
 
-def load_pattern_from_ndarray(file_path: Path) -> State:
+def load_pattern_from_ndarray(file_path: Path) -> State | None:
     module = import_module(str(file_path))
-    for item in inspect.getmembers(module):
-        if isinstance(item, np.ndarray):
-            return item
+    for name, value in inspect.getmembers(module):
+        if isinstance(value, np.ndarray):
+            return value
+    return None
 
 
 def load_objects_from_pattern_dir(
     pattern_dir: str,
     suffix: str,
     patterns: Patterns,
-    filter: Callable[[object], bool] | None = None,
+    predicate: Callable[[object], bool] | None = None,
 ) -> Patterns:
     pattern_dir_path = Path(pattern_dir)
 
     for file_path in pattern_dir_path.rglob("*." + suffix):
         try:
             pattern = file_types[suffix](file_path)
-            if filter is None or filter(pattern):
+            if predicate is None or predicate(pattern):
                 patterns[str(file_path.stem)] = pattern
                 logger.debug(f"Loaded pattern from {file_path}")
         except Exception as e:
@@ -74,12 +75,14 @@ def load_objects_from_pattern_dir(
 def get_patterns(
     pattern_dir_name: str,
     suffixes: list[str],
-    filter: Callable[[object], bool] = lambda obj: isinstance(obj, np.ndarray),
+    predicate: Callable[[object], bool] = lambda obj: isinstance(obj, np.ndarray),
 ) -> Patterns:
     patterns: Patterns = {}
     pattern_dir: str = os.path.join(os.path.dirname(__file__), pattern_dir_name)
     for suffix in suffixes:
-        patterns = load_objects_from_pattern_dir(pattern_dir, suffix, patterns, filter)
+        patterns = load_objects_from_pattern_dir(
+            pattern_dir, suffix, patterns, predicate
+        )
     return patterns
 
 

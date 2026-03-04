@@ -1,18 +1,16 @@
 import random
-from typing import Tuple
 
 import numpy as np
 
 from life import State
 
-ArrayShape = Tuple[int, int]
+ArrayShape = tuple[int, int]
 
 
 class TileMaker:
-    """Static methods for generating random binary tiles"""
+    """Methods for generating random binary tiles"""
 
-    @staticmethod
-    def __call__(tile_size: int) -> State:
+    def __call__(self, tile_size: int) -> State:
         rotator = random.choice((np.fliplr, np.flipud, np.rot90, None))
         tile_maker = random.choice(
             (TileMaker.diagonal, TileMaker.inverted_diagonal, TileMaker.quilt)
@@ -49,10 +47,9 @@ class TileMaker:
 
 
 class TilePattern:
-    """Static methods for tiling an array with different symmetries"""
+    """Methods for tiling an array with different symmetries"""
 
-    @staticmethod
-    def __call__(array: State, pattern_number: int) -> State:
+    def __call__(self, array: State, pattern_number: int) -> State:
         tiling_method = random.choice(
             (
                 TilePattern.four_corners,

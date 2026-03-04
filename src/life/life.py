@@ -1,4 +1,4 @@
-from life import State, StateIterator, StateUpdater
+from life import State, StateIterator, StateUpdater, logger
 from life.exceptions import validate_args
 from life.seeds import new_seed_generator
 
@@ -22,9 +22,14 @@ class Life:
     """
 
     def __init__(self, size: int, seed: str, func: StateUpdater) -> None:
+        logger.debug(
+            f"Initializing Life with size={size}, seed={seed}, func={func.__name__}"
+        )
         validate_args(size, seed)
         self.state: State = new_seed_generator(size=size, seed=seed)
+        logger.debug("Seed generated for %s pattern", seed)
         self.func: StateUpdater = func
+        logger.debug("Life initialization complete")
 
     def __iter__(self) -> StateIterator:
         return self

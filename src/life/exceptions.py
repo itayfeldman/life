@@ -20,6 +20,8 @@ SEED_ERROR_MSG = f"""
 The seed parameter must be one of the following: {[k for k in patterns.keys()]}.
 """
 
+BUILT_IN_SEEDS = {"noise", "symmetric"}
+
 
 class LifeParamsError(Exception):
     def __init__(self, msg: str = "") -> None:
@@ -46,5 +48,5 @@ def validate_args(size: Any, seed: Any) -> None:
         raise SizeTypeError(size)
     if size < MINSIZE or size > MAXSIZE:
         raise SizeValueError(size)
-    # if seed not in patterns.keys():
-    # raise SeedValueError(seed)
+    if seed not in BUILT_IN_SEEDS and seed not in patterns:
+        raise SeedValueError(seed)
