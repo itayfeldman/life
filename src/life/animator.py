@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from life.life import Life
 
 
+# TODO: Refactor this class to be more modular and testable. Consider separating the animation logic from the data handling logic. Consider using pygame library.
 class Animator:
     """
     The animator class is a callable that returns an animation of the game of life.
