@@ -1,111 +1,133 @@
-# PROJECT.md - Conway's Game of Life
+# PROJECT.md — Conway's Game of Life
 
 Project-specific technical guidance for the Life codebase.
 
-## Quick Start Commands
+## Quick Start
 
 ```bash
-# Install the package in development mode
-pip install -e .
-
-# Run the Game of Life with default settings
-python -m life
-
-# Run with custom parameters
-python -m life --size 100 --seed noise --interval 350 --cmap binary --figsize 8 --func fast
-
-# Run benchmarks (compares different engine implementations)
-python tests/test_timeit.py
-
-# Run via the shell script (assumes ~/.virtualenvs/life/bin/activate exists)
+uv sync
+uv run python -m life
+uv run python -m life --size 100 --seed noise --engine fast --frontend pygame
+uv run python tests/test_timeit.py   # benchmark table
 ./scripts/run.sh --size 100 --seed noise
 ```
 
 ## Project Overview
 
-A NumPy-oriented implementation of [Conway's Game of Life](https://conwaylife.com/). The main innovation is multiple pluggable computation strategies for game state updates, ranging from simple Python loops to highly optimized NumPy operations.
+A NumPy-oriented implementation of [Conway's Game of Life](https://conwaylife.com/)
+with six interchangeable computation engines and two visualization frontends. The
+codebase follows Domain-Driven Design with clean architectural layers.
 
 ## Architecture
 
+### Layer Structure
+
+```
+domain          — types, protocols, Game of Life rules (no I/O)
+engines         — six GridUpdater strategies (convolution, fast, loop,
+                  ultra_fast, vectorized, window)
+infrastructure  — CellsPatternRepository: lazy .cells file loader
+seeds           — initial state generators (noise, symmetric, pattern)
+simulation      — LifeSimulation: main iterator, depends only on protocols
+validation      — validate_args(), exception hierarchy
+presentation    — MatplotlibAnimator, PygameVisualizer
+```
+
+**Dependency rule:** `domain` is the innermost layer — nothing inside it may import
+from any other layer.
+
 ### Core Components
 
-1. **`Life` class** (`src/life/life.py`):
-   - Main iterator that drives the simulation
-   - Takes `size`, `seed`, and `func` (computation strategy)
-   - `__next__()` applies the state updater function and returns the new state
-   - Manages grid state as NDArray[int8]
+1. **`LifeSimulation`** (`src/life/simulation/life_simulation.py`):
+   - Main iterator; implements `__iter__` / `__next__`
+   - Constructor: `__init__(size, seed, engine, repository)`
+   - `state: Grid` — current NDArray[int8] grid
+   - Depends only on `domain` protocols (`GridUpdater`, `PatternRepository`)
 
-2. **Engine functions** (`src/life/engine.py`):
-   - Multiple pluggable implementations for computing the next generation
-   - Available strategies (exposed via `--func` parameter):
-     - `convolution`: Uses scipy.signal.convolve2d
-     - `window`: Uses np.roll with itertools.product
-     - `loop`: Pure Python nested loops (pedagogical, slow)
-     - `fast`: Optimized slicing with np.pad (recommended)
-     - `ultra_fast`: Advanced NumPy indexing with np.ix_
-     - `vectorized`: Uses np.roll with axis parameter
-   - Performance: loop >> convolution ≈ ultra_fast > window > vectorized > fast
+2. **Engine functions** (`src/life/engines/`):
+   - Six pluggable `GridUpdater` implementations, all using toroidal wrap
+   - Selected via `--engine` (or legacy `--func`) at the CLI
+   - `ENGINE_REGISTRY: dict[str, GridUpdater]` in `engines/__init__.py`
+   - Performance ranking (100×100, 1 000 generations):
 
-3. **`Animator` class** (`src/life/animator.py`):
-   - Creates matplotlib FuncAnimation for real-time visualization
-   - Consumes the Life iterator to animate state changes
-   - Configurable: color map, frame interval (ms), figure size
+   | Engine | Mean (s) |
+   |---|---|
+   | fast | 0.0577 |
+   | vectorized | 0.1192 |
+   | window | 0.1606 |
+   | convolution | 0.3822 |
+   | ultra_fast | 0.3896 |
+   | loop | 24.7336 |
 
-4. **Seed generators** (`src/life/seeds.py`):
-   - `new_seed_generator()` creates initial board state
-   - Supports: "noise" (random), "symmetric", and pattern names
-   - Validated via `exceptions.validate_args()`
+3. **Presentation** (`src/life/presentation/`):
+   - `PygameVisualizer` — interactive pygame frontend (default)
+   - `MatplotlibAnimator` — matplotlib FuncAnimation
+   - Both depend on the `Simulation` protocol, not on `LifeSimulation` directly
 
-5. **Type system** (`src/life/__init__.py`):
-   - `State`: NDArray[int8] - 2D numpy array of cell states
-   - `StateUpdater`: Callable[[State], State]
-   - `StateIterator`: Iterator[State]
+4. **Seed generators** (`src/life/seeds/`):
+   - `new_seed_generator(size, seed, repository) -> Grid` factory
+   - `NoiseGenerator`: random binary grid
+   - `SymmetricGenerator`: tiled symmetric patterns
+   - `PatternSeedGenerator`: named patterns from `CellsPatternRepository`
+
+5. **Domain types** (`src/life/domain/`):
+   - `Grid = NDArray[int8]`
+   - `GridUpdater = Callable[[Grid], Grid]`
+   - `PatternRepository`, `Simulation`, `Visualizer` protocols
+   - `apply_rules(neighbors, state) -> Grid` — single source of GoL truth
 
 ### Execution Flow
 
 ```
 __main__.py (argparse)
     ↓
-Life(size, seed, func) - iterator created
+CellsPatternRepository()  — lazy-load .cells patterns
+ENGINE_REGISTRY[args.engine]
     ↓
-Animator(life, cmap, interval, figsize) - visualization setup
+LifeSimulation(size, seed, engine, repository)
+    ├─ validate_args()       — size ∈ [10, 1000], seed valid
+    └─ new_seed_generator()  — builds initial Grid
     ↓
-FuncAnimation - consumes Life iterator frame by frame
-    ↓
-matplotlib.pyplot.show() - displays animation
+PygameVisualizer(sim)()   or   MatplotlibAnimator(sim)()
 ```
 
 ## Key Design Decisions
 
-- **Pluggable state updaters**: The `func` parameter allows swapping computation strategies at runtime without changing the simulation logic
-- **Iterator pattern**: Life implements `__iter__` and `__next__`, making it compatible with matplotlib's FuncAnimation
-- **NumPy-first**: All state is managed as numpy arrays; boundary conditions use wrap mode for toroidal grid
-- **Validation at entry**: Game of Life rules are enforced in engine functions; input validation in seeds.py
+- **Protocol-based coupling:** all cross-layer dependencies use `typing.Protocol`;
+  no layer imports a concrete class from another layer.
+- **Pluggable engines:** `ENGINE_REGISTRY` maps names to functions; the CLI and tests
+  both use it as the single source of engine truth.
+- **Lazy pattern loading:** `CellsPatternRepository` loads `.cells` files only on first
+  access, keeping import time fast.
+- **Validation at the boundary:** `validate_args()` runs in `LifeSimulation.__init__`;
+  internal code trusts its invariants.
+- **Iterator pattern:** `LifeSimulation` is an iterator; both frontends consume it the
+  same way — one `next()` per frame.
 
 ## Testing & Benchmarking
 
-**`tests/test_timeit.py`**:
-- Benchmarks each engine function (configurable grid size and iterations)
-- Computes statistics across multiple runs (mean, stddev, min, max)
-- Used for regression testing when optimizing engine implementations
-- Run: `python tests/test_timeit.py` (no pytest required)
+| File | Purpose |
+|---|---|
+| `tests/test_life.py` | `LifeSimulation` — init, iterator, state progression, all engines/seeds |
+| `tests/test_engine_equivalence.py` | bitwise identity across all 6 engines |
+| `tests/test_pattern_repository.py` | `CellsPatternRepository` — load, list, lazy-load, errors |
+| `tests/test_timeit.py` | benchmark suite (dual-mode: pytest + standalone) |
+
+Run all tests: `uv run pytest tests/ -v`
+Run benchmarks: `uv run python tests/test_timeit.py`
 
 ## Dependencies
 
-- **numpy**: Grid state and array operations
-- **scipy**: `convolve2d` for convolution-based engine
-- **matplotlib**: Visualization and FuncAnimation
-- **python-dotenv**: Environment configuration (`.env` file)
+- **numpy**: grid state and array operations
+- **scipy**: `convolve2d` for the convolution engine
+- **matplotlib**: `MatplotlibAnimator` frontend
+- **pygame**: `PygameVisualizer` frontend (interactive)
+- **python-dotenv**: `.env` file loading at import time
 
-## Code Style
+## Important Notes
 
-- Type hints throughout using `# type: ignore` for matplotlib compatibility
-- Docstrings follow NumPy documentation style (Parameters/Returns/Examples)
-- Engine functions include usage examples in docstrings
-- Logging configured via `logging.conf`, debug level via `.env` file
-
-## Important Notes for Development
-
-- **Boundary conditions**: All engine functions use wrap-around (toroidal) for edge cases - this is critical for proper Game of Life behavior
-- **Performance matters here**: This project benchmarks computation strategies, so changes to engine functions should be measured
-- **Command-line interface**: The `--func` parameter is the main user-facing way to select computation strategies
+- **Toroidal wrap is mandatory** — all engines must wrap at boundaries. The equivalence
+  test suite enforces this.
+- **Benchmarks are machine-specific** — re-run `uv run python tests/test_timeit.py`
+  after any engine change.
+- **`--func` is kept as a backwards-compatible alias** for `--engine` in the CLI.

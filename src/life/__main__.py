@@ -3,47 +3,70 @@ from argparse import ArgumentParser
 import matplotlib.pyplot as plt
 
 from life import logger
-from life.animator import Animator
-from life.engine import convolution, window, loop, fast, ultra_fast, vectorized
-from life.life import Life
+from life.engines import ENGINE_REGISTRY
+from life.infrastructure import CellsPatternRepository
+from life.presentation import MatplotlibAnimator, PygameVisualizer
+from life.simulation import LifeSimulation
 
-ENGINES = {
-    "convolution": convolution,
-    "window": window,
-    "loop": loop,
-    "fast": fast,
-    "ultra_fast": ultra_fast,
-    "vectorized": vectorized,
-}
 
-parser = ArgumentParser()
-parser.add_argument("--size", type=int, default=100)
-parser.add_argument("--seed", type=str, default="noise")
-parser.add_argument("--interval", type=int, default=350)
-parser.add_argument("--cmap", type=str, default="binary")
-parser.add_argument("--figsize", type=int, default=8)
-parser.add_argument(
-    "--func",
-    type=str,
-    default="fast",
-    choices=[
-        "convolution",
-        "window",
-        "loop",
-        "fast",
-        "ultra_fast",
-        "vectorized",
-    ],
-)
-args = parser.parse_args()
+def main() -> None:
+    parser = ArgumentParser(description="Conway's Game of Life")
+    parser.add_argument("--size", type=int, default=100)
+    parser.add_argument("--seed", type=str, default="noise")
+    parser.add_argument("--interval", type=int, default=100)
+    parser.add_argument(
+        "--frontend",
+        type=str,
+        default="pygame",
+        choices=["matplotlib", "pygame"],
+    )
+    # matplotlib-only options
+    parser.add_argument("--cmap", type=str, default="binary")
+    parser.add_argument("--figsize", type=int, default=8)
+    # pygame-only options
+    parser.add_argument("--window", type=int, default=800)
+    parser.add_argument(
+        "--engine",
+        "--func",
+        dest="engine",
+        type=str,
+        default="fast",
+        choices=list(ENGINE_REGISTRY.keys()),
+    )
+    args = parser.parse_args()
 
-logger.info(
-    f"Starting Life simulation with size={args.size}, seed={args.seed}, func={args.func}, interval={args.interval}, cmap={args.cmap}, figsize={args.figsize}"
-)
-life = Life(size=args.size, seed=args.seed, func=ENGINES[args.func])
-logger.info("Life object created successfully")
-animator = Animator(
-    life=life, cmap=args.cmap, interval=args.interval, figsize=args.figsize
-)
-ani = animator()
-plt.show()  # type: ignore
+    repository = CellsPatternRepository()
+    engine = ENGINE_REGISTRY[args.engine]
+
+    logger.info(
+        "Starting simulation: size=%s, seed=%s, engine=%s, "
+        "interval=%s, frontend=%s",
+        args.size, args.seed, args.engine, args.interval, args.frontend,
+    )
+
+    sim = LifeSimulation(
+        size=args.size,
+        seed=args.seed,
+        engine=engine,
+        repository=repository,
+    )
+
+    if args.frontend == "pygame":
+        PygameVisualizer(
+            simulation=sim,
+            interval=args.interval,
+            window_size=args.window,
+        )()
+    else:
+        animator = MatplotlibAnimator(
+            simulation=sim,
+            cmap=args.cmap,
+            interval=args.interval,
+            figsize=args.figsize,
+        )
+        ani = animator()  # must stay referenced; GC would stop the animation
+        plt.show()  # type: ignore
+
+
+if __name__ == "__main__":
+    main()

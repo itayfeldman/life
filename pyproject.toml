@@ -54,3 +54,8 @@ life = "life.__main__:main"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]

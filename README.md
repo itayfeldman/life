@@ -1,81 +1,98 @@
 # life
 
-## What is this?
-
-A NumPy-oriented implementation of [Conway's Game of Life](https://conwaylife.com/).
+A NumPy-oriented implementation of [Conway's Game of Life](https://conwaylife.com/) with six interchangeable computation engines and two visualization frontends.
 
 
 ## Setup
 
-To run the code, you need to have Python 3.7+ and create a virtual environment. You can use `venv` or `conda` for this.  Install the required packages using `pip`:
+```bash
+uv sync
+```
+
+Or with pip:
 
 ```bash
-python -m venv life
-source life/bin/activate  # On Windows use `life\Scripts\activate`
-
-pip install -r life/src/life/requirements.txt
-pip install -e life
+pip install -e .
 ```
+
+Requires Python 3.10+.
 
 
 ## Run
 
-In linux or macOS, you can run the script from the command line:
-
 ```bash
-life/scripts/run.sh --size 100 --seed noise --interval 350 --cmap binary --figsize 8 --func fast
+python -m life [options]
 ```
 
-You can also run the module directly using Python:
+### Options
+
+| Flag | Default | Description |
+|---|---|---|
+| `--size N` | `100` | Grid dimension (N×N). Min 10, max 1000. |
+| `--seed NAME` | `noise` | Initial state. `noise`, `symmetric`, or any named pattern (e.g. `glider`, `blinker`). |
+| `--engine NAME` | `fast` | Computation engine. See [Performance](#performance) below. |
+| `--frontend NAME` | `pygame` | `pygame` or `matplotlib`. |
+| `--interval MS` | `100` | Milliseconds between generations. |
+| `--window N` | `800` | Pygame window size in pixels (pygame only). |
+| `--cmap NAME` | `binary` | Matplotlib [colormap](https://matplotlib.org/stable/users/explain/colors/colormaps.html) (matplotlib only). |
+| `--figsize N` | `8` | Matplotlib figure size in inches (matplotlib only). |
+
+`--func` is accepted as an alias for `--engine` for backwards compatibility.
+
+### Examples
 
 ```bash
-source life/bin/activate  # On Windows use `life\Scripts\activate`
-python -m life --size 100 --seed noise --interval 350 --cmap binary --figsize 8 --func fast
+# Default: pygame window, 100×100 noise grid, fast engine
+python -m life
+
+# Pygame with a glider pattern
+python -m life --seed glider --size 50 --window 600
+
+# Matplotlib frontend
+python -m life --frontend matplotlib --size 100 --cmap inferno
+
+# Slow it down, use the loop engine
+python -m life --interval 500 --engine loop --size 30
 ```
 
 
-## Usage
+## Pygame controls
 
-The program can take a few command line arguments:
-
-* `--size`: the size of the grid (default: 100, min: 10, max: 1000)
-* `--seed`: the seed for the random number generator (default: noise)
-* `--interval`: the interval between generations in milliseconds (default: 350)
-* `--cmap`: the matplotlib [color map](https://matplotlib.org/stable/users/explain/colors/colormaps.html) to use (default: 'binary')
-* `--figsize`: the size of the figure (default: 8)
-* `--func`: the function to use (default: fast - see below for options)
+| Key | Action |
+|---|---|
+| `Space` | Pause / resume |
+| `→` | Step one generation (while paused) |
+| `+` / `-` | Speed up / slow down (±25 ms per press) |
+| `Q` / `Esc` | Quit |
 
 
 ## Performance
 
-Benchmark to run 100x100 grid for 1000 generations (in seconds)
+Benchmark: 100×100 grid, 1000 generations.
 
+| Engine | Mean (s) | StdDev | Min | Max |
+|---|---|---|---|---|
+| fast | 0.0577 | 0.0018 | 0.0562 | 0.0605 |
+| vectorized | 0.1192 | 0.0127 | 0.1058 | 0.1363 |
+| window | 0.1606 | 0.0081 | 0.1518 | 0.1715 |
+| convolution | 0.3822 | 0.0165 | 0.3709 | 0.4097 |
+| ultra_fast | 0.3896 | 0.0654 | 0.3434 | 0.4887 |
+| loop | 24.7336 | 0.4865 | 24.2138 | 25.4527 |
 
-func          |     Mean |    StdDev|       Min|       Max|
---------------|----------|----------|----------|----------|
-convolution   |    0.2436|    0.0062|    0.2355|    0.2509|
-window        |    0.0920|    0.0027|    0.0894|    0.0964|
-loop          |   20.6971|    0.2437|   20.3488|   20.9214|
-fast          |    0.0417|    0.0027|    0.0403|    0.0465|
-ultra_fast    |    0.2371|    0.0150|    0.2296|    0.2640|
-vectorized    |    0.0763|    0.0036|    0.0745|    0.0828|
+Run benchmarks yourself:
 
-
-## To Dos
-
-* Improve the seed_generation using the Patterns
-* Add Patterns ...
+```bash
+python tests/test_timeit.py          # prints table
+pytest tests/test_timeit.py -v       # pytest mode
+```
 
 
 ## References
 
-### Game of Life
-* https://ddejohn.github.io/2021/08/20/life.html
-* https://jakevdp.github.io/blog/2013/08/07/conways-game-of-life/
-* https://drsfenner.org/blog/2015/07/game-of-life-in-numpy-preliminaries-2/
-* https://drsfenner.org/blog/2015/08/game-of-life-in-numpy-2/
-### NumPy
-* http://scipy-lectures.github.io/advanced/advanced_numpy/#indexing-scheme-strides
-* http://chintaksheth.wordpress.com/2013/07/31/numpy-the-tricks-of-the-trade-part-ii/
-* https://scipy-cookbook.readthedocs.io/items/GameOfLifeStrides.html
-* http://www.rigtorp.se/2011/01/01/rolling-statistics-numpy.html
+- [Conway's Game of Life — ddejohn](https://ddejohn.github.io/2021/08/20/life.html)
+- [Game of Life in NumPy — Jake VanderPlas](https://jakevdp.github.io/blog/2013/08/07/conways-game-of-life/)
+- [Game of Life in NumPy — drsfenner (part 1)](https://drsfenner.org/blog/2015/07/game-life-numpy-preliminaries-2/)
+- [Game of Life in NumPy — drsfenner (part 2)](https://drsfenner.org/blog/2015/08/game-life-numpy-2/)
+- [NumPy strides](http://scipy-lectures.github.io/advanced/advanced_numpy/#indexing-scheme-strides)
+- [NumPy tricks](http://chintaksheth.wordpress.com/2013/07/31/numpy-the-tricks-of-the-trade-part-ii/)
+- [Game of Life with strides — SciPy cookbook](https://scipy-cookbook.readthedocs.io/items/GameOfLifeStrides.html)

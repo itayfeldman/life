@@ -18,8 +18,11 @@ try:
 except ImportError:
     pytest = None  # type: ignore
 
-from life.engine import convolution, fast, loop, ultra_fast, vectorized, window
-from life.life import Life
+from life.engines import convolution, fast, loop, ultra_fast, vectorized, window
+from life.infrastructure import CellsPatternRepository
+from life.simulation import LifeSimulation as Life
+
+_repository = CellsPatternRepository()
 
 
 # All 6 engine functions available in life.engine
@@ -79,7 +82,7 @@ def run_benchmark(
     times: list[float] = []
 
     for _ in range(runs):
-        life = Life(size=size, seed="noise", func=func)
+        life = Life(size=size, seed="noise", engine=func, repository=_repository)
         time_taken = timeit.timeit(
             stmt="next(life)",
             globals={"life": life},
