@@ -1,4 +1,4 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 
 import matplotlib.pyplot as plt
 
@@ -8,8 +8,11 @@ from life.infrastructure import CellsPatternRepository
 from life.presentation import MatplotlibAnimator, PygameVisualizer
 from life.simulation import LifeSimulation
 
+# Converts display-size inches to pygame window pixels (100 px per inch).
+PYGAME_DPI = 100
 
-def main() -> None:
+
+def build_parser() -> ArgumentParser:
     parser = ArgumentParser(description="Conway's Game of Life")
     parser.add_argument("--size", type=int, default=100)
     parser.add_argument("--seed", type=str, default="noise")
@@ -20,28 +23,44 @@ def main() -> None:
         default="pygame",
         choices=["matplotlib", "pygame"],
     )
-    # matplotlib-only options
     parser.add_argument("--cmap", type=str, default="binary")
-    parser.add_argument("--figsize", type=int, default=8)
-    # pygame-only options
-    parser.add_argument("--window", type=int, default=800)
+    parser.add_argument(
+        "--display-size",
+        dest="display_size",
+        type=int,
+        default=10,
+        metavar="N",
+        help=(
+            "Display size in inches. "
+            "Matplotlib uses this directly as figsize; "
+            "pygame multiplies by 100 to get window pixels."
+        ),
+    )
     parser.add_argument(
         "--engine",
-        "--func",
         dest="engine",
         type=str,
         default="fast",
         choices=list(ENGINE_REGISTRY.keys()),
     )
-    args = parser.parse_args()
+    return parser
+
+
+def main() -> None:
+    args = build_parser().parse_args()
 
     repository = CellsPatternRepository()
     engine = ENGINE_REGISTRY[args.engine]
 
     logger.info(
         "Starting simulation: size=%s, seed=%s, engine=%s, "
-        "interval=%s, frontend=%s",
-        args.size, args.seed, args.engine, args.interval, args.frontend,
+        "interval=%s, frontend=%s, display_size=%s",
+        args.size,
+        args.seed,
+        args.engine,
+        args.interval,
+        args.frontend,
+        args.display_size,
     )
 
     sim = LifeSimulation(
@@ -55,14 +74,14 @@ def main() -> None:
         PygameVisualizer(
             simulation=sim,
             interval=args.interval,
-            window_size=args.window,
+            window_size=args.display_size * PYGAME_DPI,
         )()
     else:
         animator = MatplotlibAnimator(
             simulation=sim,
             cmap=args.cmap,
             interval=args.interval,
-            figsize=args.figsize,
+            figsize=args.display_size,
         )
         ani = animator()  # must stay referenced; GC would stop the animation
         plt.show()  # type: ignore

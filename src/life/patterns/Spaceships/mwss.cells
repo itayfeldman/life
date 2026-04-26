@@ -1,0 +1,9 @@
+!Name: Middleweight spaceship
+!Author: John Conway
+!An orthogonally-moving spaceship of period 4.
+!www.conwaylife.com/wiki/Middleweight_spaceship
+..O
+O...O
+.....O
+O....O
+.OOOO

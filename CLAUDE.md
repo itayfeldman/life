@@ -23,7 +23,7 @@ pip install -e .  # alternative
 python -m life [--size N] [--seed noise|symmetric|<pattern>] \
                [--interval MS] [--frontend pygame|matplotlib] \
                [--engine convolution|loop|window|fast|ultra_fast|vectorized] \
-               [--window N] [--cmap NAME] [--figsize N]
+               [--display-size N] [--cmap NAME]
 
 # --func is accepted as an alias for --engine (backwards compatibility)
 

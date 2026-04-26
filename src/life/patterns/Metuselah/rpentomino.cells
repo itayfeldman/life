@@ -1,0 +1,7 @@
+!Name: R-pentomino
+!Author: John Conway
+!A methuselah that takes 1103 generations to stabilise.
+!www.conwaylife.com/wiki/R-pentomino
+.OO
+OO
+.O

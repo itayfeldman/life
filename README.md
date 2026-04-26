@@ -33,9 +33,8 @@ python -m life [options]
 | `--engine NAME` | `fast` | Computation engine. See [Performance](#performance) below. |
 | `--frontend NAME` | `pygame` | `pygame` or `matplotlib`. |
 | `--interval MS` | `100` | Milliseconds between generations. |
-| `--window N` | `800` | Pygame window size in pixels (pygame only). |
+| `--display-size N` | `8` | Display size in inches. Matplotlib uses this as `figsize`; pygame multiplies by 100 to get window pixels (so `8` → 800 px). |
 | `--cmap NAME` | `binary` | Matplotlib [colormap](https://matplotlib.org/stable/users/explain/colors/colormaps.html) (matplotlib only). |
-| `--figsize N` | `8` | Matplotlib figure size in inches (matplotlib only). |
 
 `--func` is accepted as an alias for `--engine` for backwards compatibility.
 
@@ -45,8 +44,8 @@ python -m life [options]
 # Default: pygame window, 100×100 noise grid, fast engine
 python -m life
 
-# Pygame with a glider pattern
-python -m life --seed glider --size 50 --window 600
+# Pygame with a glider pattern, 600 px window
+python -m life --seed glider --size 50 --display-size 6
 
 # Matplotlib frontend
 python -m life --frontend matplotlib --size 100 --cmap inferno

@@ -1,0 +1,9 @@
+!Name: Heavyweight spaceship
+!Author: John Conway
+!An orthogonally-moving spaceship of period 4.
+!www.conwaylife.com/wiki/Heavyweight_spaceship
+..OO
+O....O
+......O
+O.....O
+.OOOOO
