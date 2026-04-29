@@ -75,4 +75,12 @@ class SymmetricGenerator:
         tile_pattern = _TilePattern()
         divisors = [(x, k // x) for x in range(2, k + 1) if k % x == 0]
         num_tiles, tile_size = sorted(random.choice(divisors))
-        return tile_pattern(tile_maker(tile_size), num_tiles)
+        tiled = tile_pattern(tile_maker(tile_size), num_tiles)
+        # Crop to exactly (size, size) — tiling produces even dimensions from k = size//2,
+        # so odd sizes need one row/col added (zero-padding via slicing beyond the array is
+        # not available; instead we crop from an oversize tile or pad).
+        # Tiling from k=size//2 produces even dimensions; crop to exactly (size, size).
+        result = np.zeros((size, size), dtype=np.int8)
+        h, w = tiled.shape
+        result[:h, :w] = np.clip(tiled, 0, 1).astype(np.int8)
+        return result

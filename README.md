@@ -29,11 +29,11 @@ python -m life [options]
 | Flag | Default | Description |
 |---|---|---|
 | `--size N` | `100` | Grid dimension (N×N). Min 10, max 1000. |
-| `--seed NAME` | `noise` | Initial state. `noise`, `symmetric`, or any named pattern (e.g. `glider`, `blinker`). |
+| `--seed NAME` | `noise` | Initial state. `noise`, `symmetric`, `scattered`, or any named pattern (e.g. `glider`, `blinker`). |
 | `--engine NAME` | `fast` | Computation engine. See [Performance](#performance) below. |
 | `--frontend NAME` | `pygame` | `pygame` or `matplotlib`. |
 | `--interval MS` | `100` | Milliseconds between generations. |
-| `--display-size N` | `8` | Display size in inches. Matplotlib uses this as `figsize`; pygame multiplies by 100 to get window pixels (so `8` → 800 px). |
+| `--display-size N` | `10` | Display size in inches. Matplotlib uses this as `figsize`; pygame multiplies by 100 to get window pixels (so `10` → 1000 px). |
 | `--cmap NAME` | `binary` | Matplotlib [colormap](https://matplotlib.org/stable/users/explain/colors/colormaps.html) (matplotlib only). |
 
 `--func` is accepted as an alias for `--engine` for backwards compatibility.

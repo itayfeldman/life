@@ -36,6 +36,8 @@ python -m life [--size N] [--seed noise|symmetric|<pattern>] \
 uv run pytest tests/ -v
 uv run pytest tests/test_life.py -v
 uv run pytest tests/test_life.py::TestLifeInitialization::test_init_with_noise_seed
+uv run pytest tests/test_seeds.py -v
+uv run pytest tests/test_main_args.py -v
 uv run pytest tests/test_timeit.py -v    # benchmark suite (pytest mode)
 uv run python tests/test_timeit.py       # benchmark suite (prints formatted table)
 ```
@@ -52,14 +54,14 @@ src/life/
 ├── __init__.py          # loads .env + logging.conf at import; exposes logger
 ├── __main__.py          # argparse CLI; assembles and runs the simulation
 ├── domain/              # types, protocols, Game of Life rules — no I/O
-│   ├── types.py         # Grid, CellState, GridUpdater, GridIterator, BUILT_IN_SEEDS
-│   ├── protocols.py     # PatternRepository, Simulation, Visualizer, GridUpdater
+│   ├── types.py         # Grid, CellState, GridUpdater, GridIterator
+│   ├── protocols.py     # PatternRepository, Simulation
 │   └── rules.py         # apply_rules() — single source of Game of Life truth
 ├── engines/             # six interchangeable GridUpdater strategies
 │   └── __init__.py      # ENGINE_REGISTRY: dict[str, GridUpdater]
 ├── infrastructure/      # I/O: lazy-loading .cells pattern file reader
 ├── presentation/        # MatplotlibAnimator and PygameVisualizer
-├── seeds/               # initial-state generators + new_seed_generator() factory
+├── seeds/               # initial-state generators + new_seed_generator() factory + BUILT_IN_SEEDS
 ├── simulation/          # LifeSimulation iterator — depends only on protocols
 ├── validation/          # validate_args() + exception hierarchy
 └── patterns/            # .cells data files (not Python)

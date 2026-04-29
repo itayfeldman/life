@@ -71,9 +71,11 @@ src/life/
 │   ├── matplotlib_animator.py
 │   └── pygame_visualizer.py
 ├── seeds/               # initial-state generators
-│   ├── __init__.py      # new_seed_generator() factory
+│   ├── __init__.py      # new_seed_generator() factory + BUILT_IN_SEEDS
+│   ├── _placement.py    # place_pattern() shared helper
 │   ├── noise.py
 │   ├── pattern_seed.py
+│   ├── scattered.py
 │   └── symmetric.py
 ├── simulation/          # main iterator — depends only on domain protocols
 │   ├── __init__.py

@@ -95,16 +95,14 @@ class TestLifeInitialization:
         assert life.state.dtype == np.int8
         assert life.engine == convolution
 
-    def test_init_with_symmetric_seed(self, repository):
-        """Note: symmetric uses random.choice; dtype may be int8 or int64."""
-        try:
-            life = Life(
-                size=50, seed="symmetric", engine=convolution, repository=repository
-            )
-            assert life.state.shape == (50, 50)
-            assert np.all((life.state == 0) | (life.state == 1))
-        except ValueError:
-            pytest.skip("Size 50 doesn't work with symmetric seed decomposition")
+    @pytest.mark.parametrize("size", [10, 11, 20, 50, 51, 100])
+    def test_init_with_symmetric_seed(self, size, repository):
+        life = Life(
+            size=size, seed="symmetric", engine=convolution, repository=repository
+        )
+        assert life.state.shape == (size, size)
+        assert life.state.dtype == np.int8
+        assert np.all((life.state == 0) | (life.state == 1))
 
     @pytest.mark.parametrize("seed", PATTERN_SEEDS)
     def test_init_with_pattern_seeds(self, seed, repository):
@@ -345,6 +343,10 @@ class TestLifeInvalidInputs:
     def test_size_is_none(self, repository):
         with pytest.raises(SizeTypeError):
             Life(size=None, seed="noise", engine=convolution, repository=repository)
+
+    def test_size_is_bool(self, repository):
+        with pytest.raises(SizeTypeError):
+            Life(size=True, seed="noise", engine=convolution, repository=repository)
 
     def test_size_is_negative(self, repository):
         with pytest.raises(SizeValueError):

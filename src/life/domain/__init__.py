@@ -1,5 +1,5 @@
 from life.domain.types import Grid, CellState, GridUpdater, GridIterator
-from life.domain.protocols import PatternRepository, Simulation, Visualizer
+from life.domain.protocols import PatternRepository, Simulation
 
 __all__ = [
     "Grid",
@@ -8,5 +8,4 @@ __all__ = [
     "GridIterator",
     "PatternRepository",
     "Simulation",
-    "Visualizer",
 ]

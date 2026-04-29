@@ -1,7 +1,7 @@
 from typing import Any
 
 from life.domain.protocols import PatternRepository
-from life.domain.types import BUILT_IN_SEEDS
+from life.seeds import BUILT_IN_SEEDS
 
 MINSIZE = 10
 MAXSIZE = 1000
@@ -34,7 +34,7 @@ class SeedValueError(LifeParamsError):
 
 
 def validate_args(size: Any, seed: Any, repository: PatternRepository) -> None:
-    if not isinstance(size, int):
+    if not isinstance(size, int) or isinstance(size, bool):
         raise SizeTypeError(size)
     if size < MINSIZE or size > MAXSIZE:
         raise SizeValueError(size)

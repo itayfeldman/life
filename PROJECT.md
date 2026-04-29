@@ -27,7 +27,7 @@ domain          — types, protocols, Game of Life rules (no I/O)
 engines         — six GridUpdater strategies (convolution, fast, loop,
                   ultra_fast, vectorized, window)
 infrastructure  — CellsPatternRepository: lazy .cells file loader
-seeds           — initial state generators (noise, symmetric, pattern)
+seeds           — initial state generators (noise, symmetric, scattered, pattern)
 simulation      — LifeSimulation: main iterator, depends only on protocols
 validation      — validate_args(), exception hierarchy
 presentation    — MatplotlibAnimator, PygameVisualizer
@@ -68,12 +68,14 @@ from any other layer.
    - `new_seed_generator(size, seed, repository) -> Grid` factory
    - `NoiseGenerator`: random binary grid
    - `SymmetricGenerator`: tiled symmetric patterns
+   - `ScatteredGenerator`: multiple randomly-placed patterns OR-ed together
    - `PatternSeedGenerator`: named patterns from `CellsPatternRepository`
+   - `place_pattern(grid, pattern, row, col)`: shared placement helper
 
 5. **Domain types** (`src/life/domain/`):
    - `Grid = NDArray[int8]`
    - `GridUpdater = Callable[[Grid], Grid]`
-   - `PatternRepository`, `Simulation`, `Visualizer` protocols
+   - `PatternRepository`, `Simulation` protocols
    - `apply_rules(neighbors, state) -> Grid` — single source of GoL truth
 
 ### Execution Flow

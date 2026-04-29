@@ -2,6 +2,7 @@ import numpy as np
 
 from life.domain.protocols import PatternRepository
 from life.domain.types import Grid
+from life.seeds._placement import place_pattern
 
 
 class PatternSeedGenerator:
@@ -12,7 +13,5 @@ class PatternSeedGenerator:
 
     def __call__(self, size: int, name: str) -> Grid:
         state = np.zeros((size, size), dtype=np.int8)
-        pattern = self._repo.load(name)
-        n, m = pattern.shape
-        state[:n, :m] = pattern
+        place_pattern(state, self._repo.load(name), 0, 0)
         return state

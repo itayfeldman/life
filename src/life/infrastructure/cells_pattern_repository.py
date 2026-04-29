@@ -24,17 +24,24 @@ class CellsPatternRepository:
     def _ensure_loaded(self) -> None:
         if self._loaded:
             return
-        self._loaded = True
         for file_path in self._pattern_dir.rglob("*.cells"):
             try:
-                self._cache[file_path.stem] = self._parse_cells(file_path)
-                logger.debug("Loaded pattern %s from %s", file_path.stem, file_path)
+                stem = file_path.stem
+                if stem in self._cache:
+                    logger.warning(
+                        "Pattern name collision: '%s' already loaded; skipping %s",
+                        stem, file_path,
+                    )
+                    continue
+                self._cache[stem] = self._parse_cells(file_path)
+                logger.debug("Loaded pattern %s from %s", stem, file_path)
             except Exception as e:
                 logger.error("Error loading pattern from %s: %s", file_path, e)
+        self._loaded = True
 
     def _parse_cells(self, file_path: Path) -> Grid:
         lines: list[str] = []
-        with open(file_path, "r") as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             for line in f:
                 if line and not line.startswith("!"):
                     lines.append(line.rstrip())
