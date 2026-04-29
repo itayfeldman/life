@@ -7,7 +7,7 @@ Project-specific technical guidance for the Life codebase.
 ```bash
 uv sync
 uv run python -m life
-uv run python -m life --size 100 --seed noise --engine fast --frontend pygame
+uv run python -m life --size 100 --seed noise --engine pad_slice --frontend pygame
 uv run python tests/test_timeit.py   # benchmark table
 ./scripts/run.sh --size 100 --seed noise
 ```
@@ -24,8 +24,8 @@ codebase follows Domain-Driven Design with clean architectural layers.
 
 ```
 domain          — types, protocols, Game of Life rules (no I/O)
-engines         — six GridUpdater strategies (convolution, fast, loop,
-                  ultra_fast, vectorized, window)
+engines         — six GridUpdater strategies (bitpack, convolution, loop,
+                  pad_slice, ix_index, roll)
 infrastructure  — CellsPatternRepository: lazy .cells file loader
 seeds           — initial state generators (noise, symmetric, scattered, pattern)
 simulation      — LifeSimulation: main iterator, depends only on protocols
@@ -50,14 +50,14 @@ from any other layer.
    - `ENGINE_REGISTRY: dict[str, GridUpdater]` in `engines/__init__.py`
    - Performance ranking (100×100, 1 000 generations):
 
-   | Engine | Mean (s) |
-   |---|---|
-   | fast | 0.0577 |
-   | vectorized | 0.1192 |
-   | window | 0.1606 |
-   | convolution | 0.3822 |
-   | ultra_fast | 0.3896 |
-   | loop | 24.7336 |
+   | Engine | Technique | Mean (s) |
+   |---|---|---|
+   | pad_slice | `np.pad` + 8 slice sums | 0.1279 |
+   | roll | `np.roll` via `itertools.product` | 0.3997 |
+   | ix_index | `np.ix_` advanced indexing | 0.5883 |
+   | bitpack | `np.packbits` + CSA neighbor sum | 0.5155 |
+   | convolution | `scipy.signal.convolve2d` | 0.6158 |
+   | loop | pure Python double loop | 37.9015 |
 
 3. **Presentation** (`src/life/presentation/`):
    - `PygameVisualizer` — interactive pygame frontend (default)

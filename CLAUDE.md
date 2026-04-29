@@ -6,8 +6,8 @@ this repository.
 ## Project
 
 Conway's Game of Life implemented in Python with six interchangeable next-state
-computation engines (`convolution`, `loop`, `window`, `fast`, `ultra_fast`,
-`vectorized`) and two visualization frontends (`pygame`, `matplotlib`). See `README.md`
+computation engines (`bitpack`, `convolution`, `loop`, `pad_slice`, `ix_index`,
+`roll`) and two visualization frontends (`pygame`, `matplotlib`). See `README.md`
 for usage and benchmark results; `PROJECT.md` for architecture and design decisions.
 
 ## Commands
@@ -22,7 +22,7 @@ pip install -e .  # alternative
 ```bash
 python -m life [--size N] [--seed noise|symmetric|<pattern>] \
                [--interval MS] [--frontend pygame|matplotlib] \
-               [--engine convolution|loop|window|fast|ultra_fast|vectorized] \
+               [--engine bitpack|convolution|loop|pad_slice|ix_index|roll] \
                [--display-size N] [--cmap NAME]
 
 # --func is accepted as an alias for --engine (backwards compatibility)

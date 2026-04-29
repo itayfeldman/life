@@ -4,7 +4,7 @@ from life.domain.rules import apply_rules
 from life.domain.types import Grid
 
 
-def ultra_fast(state: Grid) -> Grid:
+def ix_index(state: Grid) -> Grid:
     """
     Next state via advanced indexing with pre-computed wrap indices.
 
@@ -14,7 +14,7 @@ def ultra_fast(state: Grid) -> Grid:
     --------
         >>> import numpy as np
         >>> state = np.array([[0, 1, 0], [0, 1, 0], [0, 1, 0]], dtype=np.int8)
-        >>> ultra_fast(state)
+        >>> ix_index(state)
         array([[0, 0, 0],
                [1, 1, 1],
                [0, 0, 0]], dtype=int8)

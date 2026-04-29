@@ -40,7 +40,7 @@ def build_parser() -> ArgumentParser:
         "--engine",
         dest="engine",
         type=str,
-        default="fast",
+        default="pad_slice",
         choices=list(ENGINE_REGISTRY.keys()),
     )
     return parser

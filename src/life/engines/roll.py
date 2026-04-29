@@ -6,7 +6,7 @@ from life.domain.rules import apply_rules
 from life.domain.types import Grid
 
 
-def window(state: Grid) -> Grid:
+def roll(state: Grid) -> Grid:
     """
     Next state via np.roll sliding window with toroidal wrap boundary.
 
@@ -14,7 +14,7 @@ def window(state: Grid) -> Grid:
     --------
         >>> import numpy as np
         >>> state = np.array([[0, 1, 0], [0, 1, 0], [0, 1, 0]], dtype=np.int8)
-        >>> window(state)
+        >>> roll(state)
         array([[0, 0, 0],
                [1, 1, 1],
                [0, 0, 0]], dtype=int8)

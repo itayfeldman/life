@@ -30,7 +30,7 @@ python -m life [options]
 |---|---|---|
 | `--size N` | `100` | Grid dimension (N×N). Min 10, max 1000. |
 | `--seed NAME` | `noise` | Initial state. `noise`, `symmetric`, `scattered`, or any named pattern (e.g. `glider`, `blinker`). |
-| `--engine NAME` | `fast` | Computation engine. See [Performance](#performance) below. |
+| `--engine NAME` | `pad_slice` | Computation engine. See [Performance](#performance) below. |
 | `--frontend NAME` | `pygame` | `pygame` or `matplotlib`. |
 | `--interval MS` | `100` | Milliseconds between generations. |
 | `--display-size N` | `10` | Display size in inches. Matplotlib uses this as `figsize`; pygame multiplies by 100 to get window pixels (so `10` → 1000 px). |
@@ -41,7 +41,7 @@ python -m life [options]
 ### Examples
 
 ```bash
-# Default: pygame window, 100×100 noise grid, fast engine
+# Default: pygame window, 100×100 noise grid, pad_slice engine
 python -m life
 
 # Pygame with a glider pattern, 600 px window
@@ -71,12 +71,12 @@ Benchmark: 100×100 grid, 1000 generations.
 
 | Engine | Mean (s) | StdDev | Min | Max |
 |---|---|---|---|---|
-| fast | 0.0577 | 0.0018 | 0.0562 | 0.0605 |
-| vectorized | 0.1192 | 0.0127 | 0.1058 | 0.1363 |
-| window | 0.1606 | 0.0081 | 0.1518 | 0.1715 |
-| convolution | 0.3822 | 0.0165 | 0.3709 | 0.4097 |
-| ultra_fast | 0.3896 | 0.0654 | 0.3434 | 0.4887 |
-| loop | 24.7336 | 0.4865 | 24.2138 | 25.4527 |
+| pad_slice | 0.1279 | 0.0206 | 0.1085 | 0.1590 |
+| roll | 0.3997 | 0.0647 | 0.3523 | 0.4995 |
+| ix_index | 0.5883 | 0.0044 | 0.5833 | 0.5934 |
+| bitpack | 0.5155 | 0.0282 | 0.4823 | 0.5479 |
+| convolution | 0.6158 | 0.0106 | 0.6020 | 0.6277 |
+| loop | 37.9015 | 0.9250 | 37.1816 | 39.3115 |
 
 Run benchmarks yourself:
 

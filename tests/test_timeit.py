@@ -2,7 +2,7 @@
 Benchmarking suite for Game of Life engine implementations.
 
 This module provides pytest-compatible benchmarks for all engine functions
-(convolution, loop, window, fast, ultra_fast, vectorized). Each test measures
+(convolution, loop, pad_slice, ix_index, roll). Each test measures
 execution time over multiple runs and collects statistics (mean, stdev, min, max).
 
 Can be run as:
@@ -18,21 +18,20 @@ try:
 except ImportError:
     pytest = None  # type: ignore
 
-from life.engines import convolution, fast, loop, ultra_fast, vectorized, window
+from life.engines import bitpack, convolution, ix_index, loop, pad_slice, roll
 from life.infrastructure import CellsPatternRepository
 from life.simulation import LifeSimulation as Life
 
 _repository = CellsPatternRepository()
 
 
-# All 6 engine functions available in life.engine
 ALL_ENGINES = {
+    "bitpack": bitpack,
     "convolution": convolution,
-    "window": window,
     "loop": loop,
-    "fast": fast,
-    "ultra_fast": ultra_fast,
-    "vectorized": vectorized,
+    "pad_slice": pad_slice,
+    "ix_index": ix_index,
+    "roll": roll,
 }
 
 

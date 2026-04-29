@@ -8,16 +8,16 @@ import pytest
 
 from life.domain.rules import apply_rules
 from life.domain.types import Grid as State
-from life.engines import convolution, loop, window, fast, ultra_fast, vectorized
+from life.engines import bitpack, convolution, ix_index, loop, pad_slice, roll
 
 
 ALL_ENGINES = {
+    "bitpack": bitpack,
     "convolution": convolution,
     "loop": loop,
-    "window": window,
-    "fast": fast,
-    "ultra_fast": ultra_fast,
-    "vectorized": vectorized,
+    "pad_slice": pad_slice,
+    "ix_index": ix_index,
+    "roll": roll,
 }
 
 

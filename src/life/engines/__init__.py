@@ -1,26 +1,26 @@
 from life.domain.types import GridUpdater
+from life.engines.bitpack import bitpack
 from life.engines.convolution import convolution
-from life.engines.fast import fast
+from life.engines.ix_index import ix_index
 from life.engines.loop import loop
-from life.engines.ultra_fast import ultra_fast
-from life.engines.vectorized import vectorized
-from life.engines.window import window
+from life.engines.pad_slice import pad_slice
+from life.engines.roll import roll
 
 ENGINE_REGISTRY: dict[str, GridUpdater] = {
+    "bitpack": bitpack,
     "convolution": convolution,
-    "fast": fast,
     "loop": loop,
-    "ultra_fast": ultra_fast,
-    "vectorized": vectorized,
-    "window": window,
+    "pad_slice": pad_slice,
+    "ix_index": ix_index,
+    "roll": roll,
 }
 
 __all__ = [
+    "bitpack",
     "convolution",
-    "fast",
+    "ix_index",
     "loop",
-    "ultra_fast",
-    "vectorized",
-    "window",
+    "pad_slice",
+    "roll",
     "ENGINE_REGISTRY",
 ]

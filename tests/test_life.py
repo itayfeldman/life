@@ -15,7 +15,7 @@ import numpy as np
 import pytest
 
 from life.domain.types import Grid as State, GridUpdater as StateUpdater
-from life.engines import convolution, loop, window, fast, ultra_fast, vectorized
+from life.engines import bitpack, convolution, ix_index, loop, pad_slice, roll
 from life.infrastructure import CellsPatternRepository
 from life.simulation import LifeSimulation as Life
 from life.validation.exceptions import (
@@ -26,12 +26,12 @@ from life.validation.exceptions import (
 
 
 ALL_ENGINES = {
+    "bitpack": bitpack,
     "convolution": convolution,
     "loop": loop,
-    "window": window,
-    "fast": fast,
-    "ultra_fast": ultra_fast,
-    "vectorized": vectorized,
+    "pad_slice": pad_slice,
+    "ix_index": ix_index,
+    "roll": roll,
 }
 
 VALID_SEEDS = ["noise", "symmetric"]
@@ -521,10 +521,10 @@ class TestLifeIntegration:
     @pytest.mark.parametrize("size,seed,engine_name", [
         (10, "noise", "convolution"),
         (20, "symmetric", "loop"),
-        (50, "glider", "window"),
-        (100, "blinker", "fast"),
-        (200, "noise", "ultra_fast"),
-        (500, "symmetric", "vectorized"),
+        (50, "glider", "roll"),
+        (100, "blinker", "pad_slice"),
+        (200, "noise", "ix_index"),
+        (500, "symmetric", "ix_index"),
     ])
     def test_combinations(self, size, seed, engine_name, repository):
         engine = ALL_ENGINES[engine_name]

@@ -4,7 +4,7 @@ from life.domain.rules import apply_rules
 from life.domain.types import Grid
 
 
-def fast(state: Grid) -> Grid:
+def pad_slice(state: Grid) -> Grid:
     """
     Next state via NumPy padding and slicing with toroidal wrap boundary.
 
@@ -14,7 +14,7 @@ def fast(state: Grid) -> Grid:
     --------
         >>> import numpy as np
         >>> state = np.array([[0, 1, 0], [0, 1, 0], [0, 1, 0]], dtype=np.int8)
-        >>> fast(state)
+        >>> pad_slice(state)
         array([[0, 0, 0],
                [1, 1, 1],
                [0, 0, 0]], dtype=int8)
