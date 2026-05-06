@@ -1,5 +1,0 @@
-python-dotenv
-matplotlib
-numpy
-scipy
-pygame

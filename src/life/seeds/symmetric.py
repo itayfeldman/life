@@ -1,4 +1,5 @@
 import random
+from typing import cast
 
 import numpy as np
 
@@ -29,12 +30,12 @@ class _TileMaker:
     @staticmethod
     def diagonal(shape: ArrayShape) -> Grid:
         tri = _TileMaker.quilt(shape=shape)
-        return np.clip(tri * tri.T, 0, 1)
+        return cast(Grid, np.clip(tri * tri.T, 0, 1))
 
     @staticmethod
     def inverted_diagonal(shape: ArrayShape) -> Grid:
         tri = _TileMaker.quilt(shape=shape)
-        return np.triu(np.where(tri, 0, 1)).T * tri
+        return cast(Grid, np.triu(np.where(tri, 0, 1)).T * tri)
 
 
 class _TilePattern:

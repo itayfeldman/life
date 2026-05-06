@@ -84,7 +84,7 @@ def main() -> None:
             figsize=args.display_size,
         )
         ani = animator()  # must stay referenced; GC would stop the animation
-        plt.show()  # type: ignore
+        plt.show()
 
 
 if __name__ == "__main__":

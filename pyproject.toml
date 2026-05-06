@@ -37,7 +37,15 @@ classifiers = [
     # Do not upload to PyP
     "Private :: Do Not Upload",
 ]
-dynamic = ["dependencies"]
+
+dependencies = [
+    "python-dotenv",
+    "matplotlib",
+    "numpy",
+    "scipy",
+    "pygame",
+    "mypy>=1.20.2",
+]
 
 [project.urls]
 Homepage      = "https://github.com/itayfeldman/life"
@@ -52,10 +60,12 @@ package-dir = {"" = "src"}
 [project.scripts]
 life = "life.__main__:main"
 
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
-
 [dependency-groups]
 dev = [
     "pytest>=9.0.3",
 ]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src/"]
