@@ -474,7 +474,6 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "matplotlib" },
-    { name = "mypy" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "pygame" },
@@ -485,13 +484,13 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "mypy" },
     { name = "pytest" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "matplotlib" },
-    { name = "mypy", specifier = ">=1.20.2" },
     { name = "numpy" },
     { name = "pygame" },
     { name = "python-dotenv" },
@@ -499,7 +498,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=9.0.3" }]
+dev = [
+    { name = "mypy", specifier = ">=1.20.2" },
+    { name = "pytest", specifier = ">=9.0.3" },
+]
 
 [[package]]
 name = "matplotlib"
