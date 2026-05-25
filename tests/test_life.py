@@ -524,7 +524,7 @@ class TestLifeIntegration:
         (50, "glider", "roll"),
         (100, "blinker", "pad_slice"),
         (200, "noise", "ix_index"),
-        (500, "symmetric", "ix_index"),
+        (500, "symmetric", "bitpack"),
     ])
     def test_combinations(self, size, seed, engine_name, repository):
         engine = ALL_ENGINES[engine_name]

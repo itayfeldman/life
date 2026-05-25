@@ -5,6 +5,7 @@ All engines must produce bitwise-identical outputs for the same initial state.
 """
 import numpy as np
 import pytest
+from unittest.mock import patch
 
 from life.domain.rules import apply_rules
 from life.domain.types import Grid as State
@@ -266,6 +267,17 @@ class TestEngineEdgeCases:
                 f"{engine_name} differs from convolution for size {size}x{size}."
             )
 
+    @pytest.mark.parametrize("rows,cols", [(5, 9), (7, 13), (10, 24), (8, 16)])
+    def test_all_engines_handle_non_square(self, rows, cols):
+        np.random.seed(42)
+        state = np.random.randint(0, 2, size=(rows, cols), dtype=np.int8)
+        ref = convolution(state)
+        for engine_name, engine_func in ALL_ENGINES.items():
+            result = engine_func(state)
+            assert np.array_equal(result, ref), (
+                f"{engine_name} differs from convolution for size {rows}x{cols}."
+            )
+
 
 class TestApplyRulesDirect:
     """
@@ -344,4 +356,26 @@ class TestApplyRulesDirect:
         result = ALL_ENGINES[engine_name](state)
         assert np.array_equal(result, ref), (
             f"{engine_name} failed overpopulation rule test."
+        )
+
+    def test_bitpack_neighbor_count_4_is_correct(self):
+        """bitpack must pass count=4 to apply_rules, not 0, for a cell with 4 neighbors."""
+        # Center cell (1,1) has exactly 4 live neighbors: top, left, right, bottom.
+        state = np.array([
+            [0, 1, 0],
+            [1, 0, 1],
+            [0, 1, 0],
+        ], dtype=np.int8)
+        captured = {}
+        real_apply_rules = apply_rules
+
+        def capturing_apply_rules(neighbors, s):
+            captured["neighbors"] = neighbors.copy()
+            return real_apply_rules(neighbors, s)
+
+        with patch("life.engines.bitpack.apply_rules", side_effect=capturing_apply_rules):
+            bitpack(state)
+
+        assert captured["neighbors"][1, 1] == 4, (
+            f"Expected neighbor count 4 at (1,1), got {captured['neighbors'][1, 1]}"
         )

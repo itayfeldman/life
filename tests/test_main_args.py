@@ -44,3 +44,17 @@ def test_matplotlib_figsize_passes_through():
     parser = build_parser()
     args = parser.parse_args(["--display-size", "10", "--frontend", "matplotlib"])
     assert args.display_size == 10
+
+
+def test_func_alias_accepted():
+    """--func is a backwards-compatibility alias for --engine."""
+    parser = build_parser()
+    args = parser.parse_args(["--func", "convolution"])
+    assert args.engine == "convolution"
+
+
+def test_func_alias_default_unchanged():
+    """Omitting both --engine and --func leaves the default engine intact."""
+    parser = build_parser()
+    args = parser.parse_args([])
+    assert args.engine == "pad_slice"

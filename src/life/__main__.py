@@ -43,6 +43,12 @@ def build_parser() -> ArgumentParser:
         default="pad_slice",
         choices=list(ENGINE_REGISTRY.keys()),
     )
+    parser.add_argument(
+        "--func",
+        dest="engine",
+        type=str,
+        choices=list(ENGINE_REGISTRY.keys()),
+    )
     return parser
 
 

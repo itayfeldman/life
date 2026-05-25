@@ -1,4 +1,6 @@
 """Tests for seed generators and the _place_pattern helper."""
+import random
+
 import numpy as np
 import pytest
 
@@ -6,6 +8,7 @@ from life.infrastructure import CellsPatternRepository
 from life.seeds._placement import place_pattern
 from life.seeds.pattern_seed import PatternSeedGenerator
 from life.seeds.scattered import ScatteredGenerator, scattered_count
+from life.seeds.symmetric import SymmetricGenerator
 
 
 @pytest.fixture(scope="module")
@@ -160,3 +163,37 @@ def test_scattered_available_via_factory(repo):
     grid = new_seed_generator(100, "scattered", repo)
     assert grid.shape == (100, 100)
     assert grid.dtype == np.int8
+
+
+# ---------------------------------------------------------------------------
+# SymmetricGenerator
+# ---------------------------------------------------------------------------
+
+class TestSymmetricGenerator:
+    def test_even_size_shape_and_dtype(self):
+        grid = SymmetricGenerator()(20)
+        assert grid.shape == (20, 20)
+        assert grid.dtype == np.int8
+
+    def test_odd_size_shape_and_dtype(self):
+        grid = SymmetricGenerator()(11)
+        assert grid.shape == (11, 11)
+        assert grid.dtype == np.int8
+
+    def test_odd_size_last_row_mirrors_first(self):
+        """For odd size, last row must equal first row (toroidal symmetry)."""
+        random.seed(42)
+        np.random.seed(42)
+        grid = SymmetricGenerator()(11)
+        assert np.array_equal(grid[-1, :], grid[0, :]), (
+            f"Last row {grid[-1, :]} != first row {grid[0, :]}"
+        )
+
+    def test_odd_size_last_col_mirrors_first(self):
+        """For odd size, last column must equal first column (toroidal symmetry)."""
+        random.seed(42)
+        np.random.seed(42)
+        grid = SymmetricGenerator()(11)
+        assert np.array_equal(grid[:, -1], grid[:, 0]), (
+            f"Last col {grid[:, -1]} != first col {grid[:, 0]}"
+        )

@@ -93,8 +93,8 @@ def bitpack(state: Grid) -> Grid:
     s2, c2 = _csa(neighbors[6], neighbors[7], zero)
     bit0, carry_mid = _csa(s0, s1, s2)
     bit1_pre, carry_hi = _csa(c0, c1, c2)
-    bit1, _ = _csa(bit1_pre, carry_mid, zero)
-    bit2 = carry_hi
+    bit1, carry_final = _csa(bit1_pre, carry_mid, zero)
+    bit2 = carry_hi | carry_final
 
     def unpack(plane: np.ndarray) -> np.ndarray:
         return np.unpackbits(plane, axis=1)[:, :cols].astype(np.int8)
