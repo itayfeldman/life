@@ -1,0 +1,6 @@
+#N Heavyweight spaceship
+#O John Conway
+#C An orthogonally-moving spaceship of period 4.
+#C https://conwaylife.com/wiki/Heavyweight_spaceship
+x = 6, y = 5, rule = B3/S23
+2b2o$o4bo$6bo$o5bo$b5o!

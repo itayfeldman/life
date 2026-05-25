@@ -1,0 +1,5 @@
+#N Diehard
+#C A methuselah that disappears after exactly 130 generations.
+#C https://conwaylife.com/wiki/Diehard
+x = 8, y = 3, rule = B3/S23
+6bo$2o$bo3b3o!

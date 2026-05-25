@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import numpy as np
@@ -5,10 +6,12 @@ import numpy as np
 from life import logger
 from life.domain.types import Grid
 
+_RLE_TOKEN = re.compile(r"(\d*)(b|o|\$|!)")
+
 
 class CellsPatternRepository:
     """
-    Lazy-loading repository for .cells format pattern files.
+    Lazy-loading repository for .rle format pattern files.
 
     Patterns are loaded from disk on first access, not at import time.
     The default pattern directory is src/life/patterns/.
@@ -24,7 +27,7 @@ class CellsPatternRepository:
     def _ensure_loaded(self) -> None:
         if self._loaded:
             return
-        for file_path in self._pattern_dir.rglob("*.cells"):
+        for file_path in self._pattern_dir.rglob("*.rle"):
             try:
                 stem = file_path.stem
                 if stem in self._cache:
@@ -33,25 +36,53 @@ class CellsPatternRepository:
                         stem, file_path,
                     )
                     continue
-                self._cache[stem] = self._parse_cells(file_path)
+                self._cache[stem] = self._parse_rle(file_path)
                 logger.debug("Loaded pattern %s from %s", stem, file_path)
             except Exception as e:
                 logger.error("Error loading pattern from %s: %s", file_path, e)
         self._loaded = True
 
-    def _parse_cells(self, file_path: Path) -> Grid:
-        lines: list[str] = []
+    def _parse_rle(self, file_path: Path) -> Grid:
         with open(file_path, "r", encoding="utf-8") as f:
-            for line in f:
-                if line and not line.startswith("!"):
-                    lines.append(line.rstrip())
-        if not lines:
-            raise ValueError(f"No pattern data found in {file_path}")
-        max_width = max(len(line) for line in lines)
-        pattern = np.zeros((len(lines), max_width), dtype=np.int8)
-        for i, line in enumerate(lines):
-            row = np.frombuffer(line.encode(), dtype=np.uint8)
-            pattern[i, : len(row)] = row == ord("O")
+            text = f.read()
+
+        # Strip comment lines (#) and find the header line (x = ..., y = ...)
+        lines = text.splitlines()
+        data_lines: list[str] = []
+        width = height = None
+        for line in lines:
+            stripped = line.strip()
+            if stripped.startswith("#"):
+                continue
+            if width is None and stripped.startswith("x"):
+                m = re.search(r"x\s*=\s*(\d+)", stripped)
+                n = re.search(r"y\s*=\s*(\d+)", stripped)
+                if not m or not n:
+                    raise ValueError(f"Missing x/y in header: {stripped!r}")
+                width, height = int(m.group(1)), int(n.group(1))
+                continue
+            data_lines.append(stripped)
+
+        if width is None or height is None:
+            raise ValueError(f"No header found in {file_path}")
+
+        body = "".join(data_lines)
+        pattern = np.zeros((height, width), dtype=np.int8)
+        row = col = 0
+        for m in _RLE_TOKEN.finditer(body):
+            count = int(m.group(1)) if m.group(1) else 1
+            tag = m.group(2)
+            if tag == "o":
+                pattern[row, col : col + count] = 1
+                col += count
+            elif tag == "b":
+                col += count
+            elif tag == "$":
+                row += count
+                col = 0
+            elif tag == "!":
+                break
+
         return pattern
 
     def list_names(self) -> list[str]:

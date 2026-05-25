@@ -1,0 +1,5 @@
+#N Loaf
+#C The third most common still life.
+#C https://conwaylife.com/wiki/Loaf
+x = 4, y = 4, rule = B3/S23
+b2o$o2bo$bobo$2bo!

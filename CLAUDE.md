@@ -23,9 +23,7 @@ pip install -e .  # alternative
 python -m life [--size N] [--seed noise|symmetric|<pattern>] \
                [--interval MS] [--frontend pygame|matplotlib] \
                [--engine bitpack|convolution|loop|pad_slice|ix_index|roll] \
-               [--display-size N] [--cmap NAME]
-
-# --func is accepted as an alias for --engine (backwards compatibility)
+               [--display-size N] [--cmap NAME] [--bench N]
 
 ./scripts/run.sh --size 100 --seed noise  # wrapper (assumes ~/.virtualenvs/life)
 ./scripts/debug.sh ...                    # debugpy on localhost:5678

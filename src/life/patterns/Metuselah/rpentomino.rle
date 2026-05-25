@@ -1,0 +1,6 @@
+#N R-pentomino
+#O John Conway
+#C A methuselah that takes 1103 generations to stabilise.
+#C https://conwaylife.com/wiki/R-pentomino
+x = 3, y = 3, rule = B3/S23
+b2o$2o$bo!

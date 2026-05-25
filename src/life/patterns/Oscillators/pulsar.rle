@@ -1,0 +1,7 @@
+#N Pulsar
+#O John Conway
+#C The fourth most common oscillator and by far the most common of period greater than 2.
+#C https://conwaylife.com/wiki/Pulsar
+x = 13, y = 13, rule = B3/S23
+2b3o3b3o2b$14b$o4bobo4bo$o4bobo4bo$o4bobo4bo$2b3o3b3o2b$14b$2b3o3b3o2b$
+o4bobo4bo$o4bobo4bo$o4bobo4bo$14b$2b3o3b3o2b!

@@ -1,0 +1,5 @@
+#N Figure eight
+#C A period-8 oscillator.
+#C https://conwaylife.com/wiki/Figure_eight
+x = 8, y = 8, rule = B3/S23
+3o$3o$2o4b2o$b3ob3o$b3ob3o$2o4b2o$3b3o$3b3o!

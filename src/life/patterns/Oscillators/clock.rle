@@ -1,0 +1,5 @@
+#N Clock
+#C A period-2 oscillator.
+#C https://conwaylife.com/wiki/Clock
+x = 4, y = 4, rule = B3/S23
+2bo$obo$bobo$bo!

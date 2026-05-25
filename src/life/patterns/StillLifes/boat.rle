@@ -1,0 +1,5 @@
+#N Boat
+#C The fourth most common still life.
+#C https://conwaylife.com/wiki/Boat
+x = 3, y = 3, rule = B3/S23
+2o$obo$bo!

@@ -1,0 +1,6 @@
+#N Pentadecathlon
+#O John Conway
+#C A period-15 oscillator; the most natural oscillator of period greater than 3.
+#C https://conwaylife.com/wiki/Pentadecathlon
+x = 10, y = 3, rule = B3/S23
+2bo4bo2b$2ob4ob2o$2bo4bo2b!

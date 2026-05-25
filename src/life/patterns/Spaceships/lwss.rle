@@ -1,0 +1,6 @@
+#N Lightweight spaceship
+#O John Conway
+#C The smallest known orthogonally-moving spaceship.
+#C https://conwaylife.com/wiki/Lightweight_spaceship
+x = 4, y = 4, rule = B3/S23
+bo2bo$o$o3bo$4o!

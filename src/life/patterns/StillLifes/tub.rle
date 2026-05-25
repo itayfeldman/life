@@ -1,0 +1,5 @@
+#N Tub
+#C A still life also known as diamond.
+#C https://conwaylife.com/wiki/Tub
+x = 3, y = 3, rule = B3/S23
+bo$obo$bo!

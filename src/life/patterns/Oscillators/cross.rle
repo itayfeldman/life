@@ -1,0 +1,6 @@
+#N Cross
+#O Robert Wainwright
+#C A period-3 oscillator found in October 1989.
+#C https://conwaylife.com/wiki/Cross
+x = 8, y = 8, rule = B3/S23
+2b4o$2bo2bo$2o2b2o2bo$o6bo$o6bo$2o2b2o2bo$2bo2bo$2b4o!

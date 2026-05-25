@@ -1,0 +1,6 @@
+#N Bracket pulsar
+#O Hartmut Holzwart, 1993
+#C https://conwaylife.com/wiki/Bracket_pulsar
+x = 15, y = 15, rule = B3/S23
+5bo3bo5b$5bo3bo5b$5bo3bo5b$4b2o3b2o4b$3bobo3bobo3b$5o5b5o$15b$15b$15b$
+5o5b5o$3bobo3bobo3b$4b2o3b2o4b$5bo3bo5b$5bo3bo5b$5bo3bo5b!
