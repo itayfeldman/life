@@ -218,7 +218,7 @@ class TestLifeStateProgression:
         life = Life(
             size=20, seed="glider", engine=default_engine, repository=repository
         )
-        life.state = np.zeros((20, 20), dtype=np.int8)
+        life.reset(np.zeros((20, 20), dtype=np.int8))
         life.state[8:10, 8:10] = 1
         block_state = life.state.copy()
         next_state = next(life)
@@ -228,13 +228,39 @@ class TestLifeStateProgression:
         life = Life(
             size=20, seed="glider", engine=default_engine, repository=repository
         )
-        life.state = np.zeros((20, 20), dtype=np.int8)
+        life.reset(np.zeros((20, 20), dtype=np.int8))
         life.state[10, 8:11] = 1
         state_0 = life.state.copy()
         state_1 = next(life)
         assert not np.array_equal(state_0, state_1)
         state_2 = next(life)
         assert np.array_equal(state_0, state_2)
+
+
+class TestLifeReset:
+    """Test the sanctioned reset() API for overwriting the current grid."""
+
+    def test_reset_updates_state(self, default_engine, repository):
+        life = Life(
+            size=20, seed="noise", engine=default_engine, repository=repository
+        )
+        new_state = np.zeros((20, 20), dtype=np.int8)
+        new_state[5, 5] = 1
+        life.reset(new_state)
+        assert np.array_equal(life.state, new_state)
+
+    def test_next_after_reset_uses_injected_state(self, repository):
+        """A blinker injected via reset() must oscillate on the next call."""
+        life = Life(
+            size=20, seed="noise", engine=convolution, repository=repository
+        )
+        blinker = np.zeros((20, 20), dtype=np.int8)
+        blinker[10, 8:11] = 1
+        life.reset(blinker)
+        next_state = next(life)
+        expected = np.zeros((20, 20), dtype=np.int8)
+        expected[9:12, 9] = 1
+        assert np.array_equal(next_state, expected)
 
 
 class TestLifeWithAllEngines:
@@ -251,7 +277,7 @@ class TestLifeWithAllEngines:
     def test_all_engines_with_blinker(self, engine_name, repository):
         engine = ALL_ENGINES[engine_name]
         life = Life(size=20, seed="glider", engine=engine, repository=repository)
-        life.state = np.zeros((20, 20), dtype=np.int8)
+        life.reset(np.zeros((20, 20), dtype=np.int8))
         life.state[10, 8:11] = 1
         state_0 = life.state.copy()
         state_1 = next(life)
@@ -267,7 +293,7 @@ class TestLifeWithAllEngines:
     def test_all_engines_with_block(self, engine_name, repository):
         engine = ALL_ENGINES[engine_name]
         life = Life(size=20, seed="glider", engine=engine, repository=repository)
-        life.state = np.zeros((20, 20), dtype=np.int8)
+        life.reset(np.zeros((20, 20), dtype=np.int8))
         life.state[9:11, 9:11] = 1
         block_state = life.state.copy()
         next_state = next(life)
@@ -392,7 +418,7 @@ class TestLifeMultipleIterations:
         life = Life(
             size=20, seed="glider", engine=convolution, repository=repository
         )
-        life.state = np.zeros((20, 20), dtype=np.int8)
+        life.reset(np.zeros((20, 20), dtype=np.int8))
         life.state[10, 8:11] = 1
         state_0 = life.state.copy()
 
@@ -432,7 +458,7 @@ class TestLifeEdgeCases:
         life = Life(
             size=20, seed="noise", engine=convolution, repository=repository
         )
-        life.state = np.zeros((20, 20), dtype=np.int8)
+        life.reset(np.zeros((20, 20), dtype=np.int8))
         state = next(life)
         assert np.array_equal(state, np.zeros((20, 20), dtype=np.int8))
 
@@ -440,7 +466,7 @@ class TestLifeEdgeCases:
         life = Life(
             size=15, seed="noise", engine=convolution, repository=repository
         )
-        life.state = np.ones((15, 15), dtype=np.int8)
+        life.reset(np.ones((15, 15), dtype=np.int8))
         state = next(life)
         assert state.dtype == np.int8
         assert np.all((state == 0) | (state == 1))
@@ -449,7 +475,7 @@ class TestLifeEdgeCases:
         life = Life(
             size=20, seed="noise", engine=convolution, repository=repository
         )
-        life.state = np.zeros((20, 20), dtype=np.int8)
+        life.reset(np.zeros((20, 20), dtype=np.int8))
         life.state[10, 10] = 1
         state = next(life)
         assert np.array_equal(state, np.zeros((20, 20), dtype=np.int8))
@@ -458,7 +484,7 @@ class TestLifeEdgeCases:
         life = Life(
             size=20, seed="noise", engine=convolution, repository=repository
         )
-        life.state = np.zeros((20, 20), dtype=np.int8)
+        life.reset(np.zeros((20, 20), dtype=np.int8))
         life.state[10, 10:12] = 1
         state = next(life)
         assert np.array_equal(state, np.zeros((20, 20), dtype=np.int8))

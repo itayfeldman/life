@@ -45,3 +45,7 @@ class LifeSimulation:
     def __next__(self) -> Grid:
         self.state = self.engine(self.state)
         return self.state
+
+    def reset(self, state: Grid) -> None:
+        """Replace the current grid state, e.g. to seed a specific pattern."""
+        self.state = state
