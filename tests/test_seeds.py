@@ -166,6 +166,43 @@ def test_scattered_available_via_factory(repo):
 
 
 # ---------------------------------------------------------------------------
+# SEED_REGISTRY
+# ---------------------------------------------------------------------------
+
+class TestSeedRegistry:
+    def test_contains_exactly_built_in_seeds(self):
+        from life.seeds import BUILT_IN_SEEDS, SEED_REGISTRY
+        assert set(SEED_REGISTRY.keys()) == {"noise", "symmetric", "scattered"}
+        assert BUILT_IN_SEEDS == frozenset(SEED_REGISTRY.keys())
+
+    def test_noise_matches_factory_dispatch(self, repo):
+        from life.seeds import SEED_REGISTRY, new_seed_generator
+        np.random.seed(7)
+        via_factory = new_seed_generator(20, "noise", repo)
+        np.random.seed(7)
+        via_registry = SEED_REGISTRY["noise"](20, repo)
+        assert np.array_equal(via_factory, via_registry)
+
+    def test_symmetric_matches_factory_dispatch(self, repo):
+        from life.seeds import SEED_REGISTRY, new_seed_generator
+        random.seed(7)
+        np.random.seed(7)
+        via_factory = new_seed_generator(20, "symmetric", repo)
+        random.seed(7)
+        np.random.seed(7)
+        via_registry = SEED_REGISTRY["symmetric"](20, repo)
+        assert np.array_equal(via_factory, via_registry)
+
+    def test_scattered_matches_factory_dispatch(self, repo):
+        from life.seeds import SEED_REGISTRY, new_seed_generator
+        np.random.seed(7)
+        via_factory = new_seed_generator(100, "scattered", repo)
+        np.random.seed(7)
+        via_registry = SEED_REGISTRY["scattered"](100, repo)
+        assert np.array_equal(via_factory, via_registry)
+
+
+# ---------------------------------------------------------------------------
 # SymmetricGenerator
 # ---------------------------------------------------------------------------
 

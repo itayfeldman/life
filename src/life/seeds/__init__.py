@@ -1,3 +1,5 @@
+from typing import Callable
+
 from life.domain.protocols import PatternRepository
 from life.domain.types import Grid
 from life.seeds.noise import NoiseGenerator
@@ -5,20 +7,37 @@ from life.seeds.pattern_seed import PatternSeedGenerator
 from life.seeds.scattered import ScatteredGenerator
 from life.seeds.symmetric import SymmetricGenerator
 
-BUILT_IN_SEEDS: frozenset[str] = frozenset({"noise", "symmetric", "scattered"})
+_SeedGenerator = Callable[[int, PatternRepository], Grid]
 
 _noise = NoiseGenerator()
 _symmetric = SymmetricGenerator()
 
 
+def _generate_noise(size: int, repository: PatternRepository) -> Grid:
+    return _noise(size)
+
+
+def _generate_symmetric(size: int, repository: PatternRepository) -> Grid:
+    return _symmetric(size)
+
+
+def _generate_scattered(size: int, repository: PatternRepository) -> Grid:
+    return ScatteredGenerator(repository)(size)
+
+
+SEED_REGISTRY: dict[str, _SeedGenerator] = {
+    "noise": _generate_noise,
+    "symmetric": _generate_symmetric,
+    "scattered": _generate_scattered,
+}
+
+BUILT_IN_SEEDS: frozenset[str] = frozenset(SEED_REGISTRY.keys())
+
+
 def new_seed_generator(size: int, seed: str, repository: PatternRepository) -> Grid:
-    if seed == "noise":
-        return _noise(size)
-    if seed == "symmetric":
-        return _symmetric(size)
-    if seed == "scattered":
-        return ScatteredGenerator(repository)(size)
+    if seed in SEED_REGISTRY:
+        return SEED_REGISTRY[seed](size, repository)
     return PatternSeedGenerator(repository)(size, seed)
 
 
-__all__ = ["new_seed_generator", "BUILT_IN_SEEDS"]
+__all__ = ["new_seed_generator", "BUILT_IN_SEEDS", "SEED_REGISTRY"]

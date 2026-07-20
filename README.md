@@ -35,8 +35,7 @@ python -m life [options]
 | `--interval MS` | `100` | Milliseconds between generations. |
 | `--display-size N` | `10` | Display size in inches. Matplotlib uses this as `figsize`; pygame multiplies by 100 to get window pixels (so `10` → 1000 px). |
 | `--cmap NAME` | `binary` | Matplotlib [colormap](https://matplotlib.org/stable/users/explain/colors/colormaps.html) (matplotlib only). |
-
-`--func` is accepted as an alias for `--engine` for backwards compatibility.
+| `--bench N` | `None` | Run N generations headlessly and print a timing summary instead of launching a frontend. |
 
 ### Examples
 

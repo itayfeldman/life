@@ -57,12 +57,12 @@ src/life/
 │   └── rules.py         # apply_rules() — single source of Game of Life truth
 ├── engines/             # six interchangeable GridUpdater strategies
 │   └── __init__.py      # ENGINE_REGISTRY: dict[str, GridUpdater]
-├── infrastructure/      # I/O: lazy-loading .cells pattern file reader
+├── infrastructure/      # I/O: lazy-loading .rle pattern file reader
 ├── presentation/        # MatplotlibAnimator and PygameVisualizer
 ├── seeds/               # initial-state generators + new_seed_generator() factory + BUILT_IN_SEEDS
 ├── simulation/          # LifeSimulation iterator — depends only on protocols
 ├── validation/          # validate_args() + exception hierarchy
-└── patterns/            # .cells data files (not Python)
+└── patterns/            # .rle data files (not Python)
 ```
 
 **Dependency rule:** inner layers must not import from outer layers.
@@ -74,7 +74,7 @@ domain ← engines, simulation, seeds, validation, infrastructure, presentation
 **Data flow:**
 ```
 __main__.py (argparse)
-  → CellsPatternRepository()           # infrastructure — lazy .cells loader
+  → CellsPatternRepository()           # infrastructure — lazy .rle loader
   → ENGINE_REGISTRY[args.engine]       # engines — selects one of six strategies
   → LifeSimulation(size, seed,         # simulation
                    engine, repository)
@@ -103,7 +103,7 @@ mandatory — any engine change must preserve this.
 
 - `src/life/__init__.py` loads `.env` and `logging.conf` at import time. Setting
   `DEBUG=true` in `.env` switches the file handler to DEBUG level.
-- `CellsPatternRepository` loads `.cells` files lazily on first access (not at import).
+- `CellsPatternRepository` loads `.rle` files lazily on first access (not at import).
   A malformed file logs an error but does not raise.
 - `mypy` is not in dev dependencies — run it via `uv run --with mypy mypy src/`.
 - Always use `uv run` rather than bare `python` or `pytest`.

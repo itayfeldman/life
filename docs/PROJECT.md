@@ -26,7 +26,7 @@ codebase follows Domain-Driven Design with clean architectural layers.
 domain          — types, protocols, Game of Life rules (no I/O)
 engines         — six GridUpdater strategies (bitpack, convolution, loop,
                   pad_slice, ix_index, roll)
-infrastructure  — CellsPatternRepository: lazy .cells file loader
+infrastructure  — CellsPatternRepository: lazy .rle file loader
 seeds           — initial state generators (noise, symmetric, scattered, pattern)
 simulation      — LifeSimulation: main iterator, depends only on protocols
 validation      — validate_args(), exception hierarchy
@@ -46,7 +46,7 @@ from any other layer.
 
 2. **Engine functions** (`src/life/engines/`):
    - Six pluggable `GridUpdater` implementations, all using toroidal wrap
-   - Selected via `--engine` (or legacy `--func`) at the CLI
+   - Selected via `--engine` at the CLI
    - `ENGINE_REGISTRY: dict[str, GridUpdater]` in `engines/__init__.py`
    - Performance ranking (100×100, 1 000 generations):
 
@@ -83,7 +83,7 @@ from any other layer.
 ```
 __main__.py (argparse)
     ↓
-CellsPatternRepository()  — lazy-load .cells patterns
+CellsPatternRepository()  — lazy-load .rle patterns
 ENGINE_REGISTRY[args.engine]
     ↓
 LifeSimulation(size, seed, engine, repository)
@@ -99,7 +99,7 @@ PygameVisualizer(sim)()   or   MatplotlibAnimator(sim)()
   no layer imports a concrete class from another layer.
 - **Pluggable engines:** `ENGINE_REGISTRY` maps names to functions; the CLI and tests
   both use it as the single source of engine truth.
-- **Lazy pattern loading:** `CellsPatternRepository` loads `.cells` files only on first
+- **Lazy pattern loading:** `CellsPatternRepository` loads `.rle` files only on first
   access, keeping import time fast.
 - **Validation at the boundary:** `validate_args()` runs in `LifeSimulation.__init__`;
   internal code trusts its invariants.
@@ -132,4 +132,3 @@ Run benchmarks: `uv run python tests/test_timeit.py`
   test suite enforces this.
 - **Benchmarks are machine-specific** — re-run `uv run python tests/test_timeit.py`
   after any engine change.
-- **`--func` is kept as a backwards-compatible alias** for `--engine` in the CLI.

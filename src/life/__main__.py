@@ -1,5 +1,5 @@
 import time
-from argparse import ArgumentParser, Namespace
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 import matplotlib.pyplot as plt
 
@@ -41,7 +41,7 @@ def build_parser() -> ArgumentParser:
 
     parser = ArgumentParser(
         description="Conway's Game of Life",
-        formatter_class=lambda prog: __import__("argparse").RawDescriptionHelpFormatter(
+        formatter_class=lambda prog: RawDescriptionHelpFormatter(
             prog, max_help_position=28
         ),
     )
