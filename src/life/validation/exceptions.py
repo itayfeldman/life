@@ -1,7 +1,7 @@
 from typing import Any
 
 from life.domain.protocols import PatternRepository
-from life.seeds import BUILT_IN_SEEDS
+from life.domain.types import BUILT_IN_SEEDS
 
 MINSIZE = 10
 MAXSIZE = 1000

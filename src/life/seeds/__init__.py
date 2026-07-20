@@ -1,7 +1,7 @@
 from typing import Callable
 
 from life.domain.protocols import PatternRepository
-from life.domain.types import Grid
+from life.domain.types import BUILT_IN_SEEDS, Grid
 from life.seeds.noise import NoiseGenerator
 from life.seeds.pattern_seed import PatternSeedGenerator
 from life.seeds.scattered import ScatteredGenerator
@@ -25,13 +25,13 @@ def _generate_scattered(size: int, repository: PatternRepository) -> Grid:
     return ScatteredGenerator(repository)(size)
 
 
+# Keys must match life.domain.types.BUILT_IN_SEEDS — enforced by
+# tests/test_import_conventions.py.
 SEED_REGISTRY: dict[str, _SeedGenerator] = {
     "noise": _generate_noise,
     "symmetric": _generate_symmetric,
     "scattered": _generate_scattered,
 }
-
-BUILT_IN_SEEDS: frozenset[str] = frozenset(SEED_REGISTRY.keys())
 
 
 def new_seed_generator(size: int, seed: str, repository: PatternRepository) -> Grid:
