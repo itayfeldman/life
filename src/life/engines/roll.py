@@ -2,8 +2,7 @@ import itertools
 
 import numpy as np
 
-from life.domain.rules import apply_rules
-from life.domain.types import Grid
+from life.domain import Grid, apply_rules
 
 
 def roll(state: Grid) -> Grid:

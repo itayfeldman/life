@@ -1,6 +1,6 @@
 import numpy as np
 
-from life.domain.types import Grid
+from life.domain import Grid
 
 
 def place_pattern(grid: Grid, pattern: Grid, row: int, col: int) -> None:

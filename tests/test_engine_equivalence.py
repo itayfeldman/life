@@ -7,8 +7,7 @@ import numpy as np
 import pytest
 from unittest.mock import patch
 
-from life.domain.rules import apply_rules
-from life.domain.types import Grid as State
+from life.domain import Grid as State, apply_rules
 from life.engines import bitpack, convolution, ix_index, loop, pad_slice, roll
 
 

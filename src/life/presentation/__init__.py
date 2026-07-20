@@ -1,6 +1,6 @@
 from typing import Callable
 
-from life.domain.protocols import Simulation, Visualizer
+from life.domain import Simulation, Visualizer
 from life.presentation.matplotlib_animator import MatplotlibAnimator
 from life.presentation.pygame_visualizer import PygameVisualizer
 

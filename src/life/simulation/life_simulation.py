@@ -1,8 +1,7 @@
 from life import logger
-from life.domain.protocols import PatternRepository
-from life.domain.types import Grid, GridIterator, GridUpdater
+from life.domain import Grid, GridIterator, GridUpdater, PatternRepository
 from life.seeds import new_seed_generator
-from life.validation.exceptions import validate_args
+from life.validation import validate_args
 
 
 class LifeSimulation:

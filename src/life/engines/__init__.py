@@ -1,4 +1,4 @@
-from life.domain.types import GridUpdater
+from life.domain import GridUpdater
 from life.engines.bitpack import bitpack
 from life.engines.convolution import convolution
 from life.engines.ix_index import ix_index

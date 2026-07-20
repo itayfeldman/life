@@ -14,11 +14,11 @@ Test organization:
 import numpy as np
 import pytest
 
-from life.domain.types import Grid as State, GridUpdater as StateUpdater
+from life.domain import Grid as State, GridUpdater as StateUpdater
 from life.engines import bitpack, convolution, ix_index, loop, pad_slice, roll
 from life.infrastructure import CellsPatternRepository
 from life.simulation import LifeSimulation as Life
-from life.validation.exceptions import (
+from life.validation import (
     LifeParamsError,
     SizeTypeError,
     SizeValueError,

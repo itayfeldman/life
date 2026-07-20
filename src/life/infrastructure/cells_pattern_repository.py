@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 
 from life import logger
-from life.domain.types import Grid
+from life.domain import Grid
 
 _RLE_TOKEN = re.compile(r"(\d*)(b|o|\$|!)")
 

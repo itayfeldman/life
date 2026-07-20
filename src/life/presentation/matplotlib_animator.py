@@ -4,7 +4,7 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from matplotlib.artist import Artist
 
-from life.domain.protocols import Simulation
+from life.domain import Simulation
 
 
 class MatplotlibAnimator:

@@ -1,7 +1,6 @@
 from typing import Callable
 
-from life.domain.protocols import PatternRepository
-from life.domain.types import BUILT_IN_SEEDS, Grid
+from life.domain import BUILT_IN_SEEDS, Grid, PatternRepository
 from life.seeds.noise import NoiseGenerator
 from life.seeds.pattern_seed import PatternSeedGenerator
 from life.seeds.scattered import ScatteredGenerator

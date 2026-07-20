@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 from life.__main__ import build_parser, run_bench
-from life.domain.protocols import Visualizer
+from life.domain import Visualizer
 from life.presentation import (
     FRONTEND_REGISTRY,
     PYGAME_DPI,

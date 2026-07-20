@@ -1,7 +1,6 @@
 import numpy as np
 
-from life.domain.protocols import PatternRepository
-from life.domain.types import Grid
+from life.domain import Grid, PatternRepository
 from life.seeds._placement import place_pattern
 
 

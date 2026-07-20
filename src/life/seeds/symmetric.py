@@ -3,7 +3,7 @@ from typing import cast
 
 import numpy as np
 
-from life.domain.types import Grid
+from life.domain import Grid
 
 ArrayShape = tuple[int, int]
 

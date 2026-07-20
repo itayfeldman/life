@@ -1,6 +1,6 @@
 import numpy as np
 
-from life.domain.types import Grid
+from life.domain import Grid
 
 
 class NoiseGenerator:

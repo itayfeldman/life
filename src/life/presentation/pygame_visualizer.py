@@ -1,7 +1,7 @@
 import numpy as np
 import pygame
 
-from life.domain.protocols import Simulation
+from life.domain import Simulation
 
 _DEAD = (10, 10, 10)
 _ALIVE = (200, 230, 200)

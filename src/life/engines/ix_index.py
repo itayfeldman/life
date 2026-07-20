@@ -1,7 +1,6 @@
 import numpy as np
 
-from life.domain.rules import apply_rules
-from life.domain.types import Grid
+from life.domain import Grid, apply_rules
 
 
 def ix_index(state: Grid) -> Grid:

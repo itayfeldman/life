@@ -1,8 +1,7 @@
 import numpy as np
 from scipy.signal import convolve2d  # type: ignore[import-untyped]
 
-from life.domain.rules import apply_rules
-from life.domain.types import Grid
+from life.domain import Grid, apply_rules
 
 
 def convolution(state: Grid) -> Grid:

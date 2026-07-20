@@ -1,11 +1,21 @@
-from life.domain.types import Grid, CellState, GridUpdater, GridIterator
-from life.domain.protocols import PatternRepository, Simulation
+from life.domain.protocols import PatternRepository, Simulation, Visualizer
+from life.domain.rules import apply_rules
+from life.domain.types import (
+    BUILT_IN_SEEDS,
+    CellState,
+    Grid,
+    GridIterator,
+    GridUpdater,
+)
 
 __all__ = [
-    "Grid",
+    "BUILT_IN_SEEDS",
     "CellState",
-    "GridUpdater",
+    "Grid",
     "GridIterator",
+    "GridUpdater",
     "PatternRepository",
     "Simulation",
+    "Visualizer",
+    "apply_rules",
 ]
