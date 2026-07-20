@@ -16,7 +16,7 @@ import pytest
 
 from life.domain import Grid as State, GridUpdater as StateUpdater
 from life.engines import bitpack, convolution, ix_index, loop, pad_slice, roll
-from life.infrastructure import CellsPatternRepository
+from life.infrastructure import RlePatternRepository
 from life.simulation import LifeSimulation as Life
 from life.validation import (
     LifeParamsError,
@@ -41,8 +41,8 @@ MAX_SIZE = 1000
 
 
 @pytest.fixture(scope="module")
-def repository() -> CellsPatternRepository:
-    return CellsPatternRepository()
+def repository() -> RlePatternRepository:
+    return RlePatternRepository()
 
 
 @pytest.fixture

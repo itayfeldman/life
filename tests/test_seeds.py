@@ -4,7 +4,7 @@ import random
 import numpy as np
 import pytest
 
-from life.infrastructure import CellsPatternRepository
+from life.infrastructure import RlePatternRepository
 from life.seeds._placement import place_pattern
 from life.seeds.pattern_seed import PatternSeedGenerator
 from life.seeds.scattered import ScatteredGenerator, scattered_count
@@ -12,8 +12,8 @@ from life.seeds.symmetric import SymmetricGenerator
 
 
 @pytest.fixture(scope="module")
-def repo() -> CellsPatternRepository:
-    return CellsPatternRepository()
+def repo() -> RlePatternRepository:
+    return RlePatternRepository()
 
 
 # ---------------------------------------------------------------------------

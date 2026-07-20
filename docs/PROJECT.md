@@ -26,7 +26,7 @@ codebase follows Domain-Driven Design with clean architectural layers.
 domain          — types, protocols, Game of Life rules (no I/O)
 engines         — six GridUpdater strategies (bitpack, convolution, loop,
                   pad_slice, ix_index, roll)
-infrastructure  — CellsPatternRepository: lazy .rle file loader
+infrastructure  — RlePatternRepository: lazy .rle file loader
 seeds           — initial state generators (noise, symmetric, scattered, pattern)
 simulation      — LifeSimulation: main iterator, depends only on protocols
 validation      — validate_args(), exception hierarchy
@@ -69,7 +69,7 @@ from any other layer.
    - `NoiseGenerator`: random binary grid
    - `SymmetricGenerator`: tiled symmetric patterns
    - `ScatteredGenerator`: multiple randomly-placed patterns OR-ed together
-   - `PatternSeedGenerator`: named patterns from `CellsPatternRepository`
+   - `PatternSeedGenerator`: named patterns from `RlePatternRepository`
    - `place_pattern(grid, pattern, row, col)`: shared placement helper
 
 5. **Domain types** (`src/life/domain/`):
@@ -83,7 +83,7 @@ from any other layer.
 ```
 __main__.py (argparse)
     ↓
-CellsPatternRepository()  — lazy-load .rle patterns
+RlePatternRepository()  — lazy-load .rle patterns
 ENGINE_REGISTRY[args.engine]
     ↓
 LifeSimulation(size, seed, engine, repository)
@@ -99,7 +99,7 @@ PygameVisualizer(sim)()   or   MatplotlibAnimator(sim)()
   no layer imports a concrete class from another layer.
 - **Pluggable engines:** `ENGINE_REGISTRY` maps names to functions; the CLI and tests
   both use it as the single source of engine truth.
-- **Lazy pattern loading:** `CellsPatternRepository` loads `.rle` files only on first
+- **Lazy pattern loading:** `RlePatternRepository` loads `.rle` files only on first
   access, keeping import time fast.
 - **Validation at the boundary:** `validate_args()` runs in `LifeSimulation.__init__`;
   internal code trusts its invariants.
@@ -112,7 +112,7 @@ PygameVisualizer(sim)()   or   MatplotlibAnimator(sim)()
 |---|---|
 | `tests/test_life.py` | `LifeSimulation` — init, iterator, state progression, all engines/seeds |
 | `tests/test_engine_equivalence.py` | bitwise identity across all 6 engines |
-| `tests/test_pattern_repository.py` | `CellsPatternRepository` — load, list, lazy-load, errors |
+| `tests/test_pattern_repository.py` | `RlePatternRepository` — load, list, lazy-load, errors |
 | `tests/test_timeit.py` | benchmark suite (dual-mode: pytest + standalone) |
 
 Run all tests: `uv run pytest tests/ -v`

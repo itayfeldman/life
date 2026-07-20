@@ -1,3 +1,3 @@
-from life.infrastructure.cells_pattern_repository import CellsPatternRepository
+from life.infrastructure.rle_pattern_repository import RlePatternRepository
 
-__all__ = ["CellsPatternRepository"]
+__all__ = ["RlePatternRepository"]

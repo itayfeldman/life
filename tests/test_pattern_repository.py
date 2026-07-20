@@ -1,15 +1,15 @@
-"""Tests for CellsPatternRepository (RLE format)."""
+"""Tests for RlePatternRepository (RLE format)."""
 import logging
 import numpy as np
 import pytest
 from pathlib import Path
 
-from life.infrastructure import CellsPatternRepository
+from life.infrastructure import RlePatternRepository
 
 
 @pytest.fixture(scope="module")
-def repo() -> CellsPatternRepository:
-    return CellsPatternRepository()
+def repo() -> RlePatternRepository:
+    return RlePatternRepository()
 
 
 def test_list_names_returns_known_patterns(repo):
@@ -52,7 +52,7 @@ def test_lazy_loading_does_not_load_at_import(tmp_path):
 
     import unittest.mock as mock
     with mock.patch.object(Path, "rglob", tracking_rglob):
-        fresh = CellsPatternRepository(tmp_path)
+        fresh = RlePatternRepository(tmp_path)
         assert accessed == [], "rglob called before any public method"
         fresh.list_names()
         assert accessed != [], "rglob not called after list_names()"
@@ -63,7 +63,7 @@ def test_malformed_cells_file_does_not_raise(tmp_path, caplog):
     bad = tmp_path / "bad.rle"
     bad.write_text("not valid rle content\n", encoding="utf-8")
     with caplog.at_level(logging.ERROR, logger="life"):
-        repo = CellsPatternRepository(tmp_path)
+        repo = RlePatternRepository(tmp_path)
         names = repo.list_names()
     assert "bad" not in names
 
@@ -78,7 +78,7 @@ def test_stem_collision_logs_warning(tmp_path, caplog):
     (sub1 / "glider.rle").write_text(rle, encoding="utf-8")
     (sub2 / "glider.rle").write_text(rle, encoding="utf-8")
     with caplog.at_level(logging.WARNING, logger="life"):
-        repo = CellsPatternRepository(tmp_path)
+        repo = RlePatternRepository(tmp_path)
         repo.list_names()
     assert any("glider" in r.message for r in caplog.records)
 
@@ -114,7 +114,7 @@ def test_rle_malformed_does_not_raise(tmp_path, caplog):
     bad = tmp_path / "bad.rle"
     bad.write_text("not valid rle content\n", encoding="utf-8")
     with caplog.at_level(logging.ERROR, logger="life"):
-        r = CellsPatternRepository(tmp_path)
+        r = RlePatternRepository(tmp_path)
         names = r.list_names()
     assert "bad" not in names
 
@@ -129,6 +129,6 @@ def test_rle_stem_collision_logs_warning(tmp_path, caplog):
     (sub1 / "glider.rle").write_text(rle_body, encoding="utf-8")
     (sub2 / "glider.rle").write_text(rle_body, encoding="utf-8")
     with caplog.at_level(logging.WARNING, logger="life"):
-        r = CellsPatternRepository(tmp_path)
+        r = RlePatternRepository(tmp_path)
         r.list_names()
     assert any("glider" in rec.message for rec in caplog.records)

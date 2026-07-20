@@ -19,10 +19,10 @@ except ImportError:
     pytest = None  # type: ignore
 
 from life.engines import bitpack, convolution, ix_index, loop, pad_slice, roll
-from life.infrastructure import CellsPatternRepository
+from life.infrastructure import RlePatternRepository
 from life.simulation import LifeSimulation as Life
 
-_repository = CellsPatternRepository()
+_repository = RlePatternRepository()
 
 
 ALL_ENGINES = {

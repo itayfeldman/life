@@ -3,7 +3,7 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 from life import logger
 from life.engines import ENGINE_REGISTRY
-from life.infrastructure import CellsPatternRepository
+from life.infrastructure import RlePatternRepository
 from life.presentation import FRONTEND_REGISTRY
 from life.simulation import LifeSimulation
 
@@ -14,7 +14,7 @@ def run_bench(
     seed: str,
     engine_name: str,
 ) -> None:
-    repository = CellsPatternRepository()
+    repository = RlePatternRepository()
     engine = ENGINE_REGISTRY[engine_name]
     sim = LifeSimulation(size=size, seed=seed, engine=engine, repository=repository)
 
@@ -30,7 +30,7 @@ def run_bench(
 
 
 def build_parser() -> ArgumentParser:
-    repo = CellsPatternRepository()
+    repo = RlePatternRepository()
     pattern_names = sorted(repo.list_names())
     engine_names = sorted(ENGINE_REGISTRY.keys())
 
@@ -98,7 +98,7 @@ def main() -> None:
         )
         return
 
-    repository = CellsPatternRepository()
+    repository = RlePatternRepository()
     engine = ENGINE_REGISTRY[args.engine]
 
     logger.info(

@@ -9,7 +9,7 @@ from life.domain import Grid
 _RLE_TOKEN = re.compile(r"(\d*)(b|o|\$|!)")
 
 
-class CellsPatternRepository:
+class RlePatternRepository:
     """
     Lazy-loading repository for .rle format pattern files.
 
