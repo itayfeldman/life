@@ -37,7 +37,7 @@ class MatplotlibAnimator:
         self.interval = interval
         self.figsize = figsize
 
-    def __call__(self) -> animation.FuncAnimation:
+    def __call__(self) -> None:
         fig, ax = plt.subplots(figsize=(self.figsize, self.figsize))
         im = ax.imshow(
             self.simulation.state, cmap=self.cmap, interpolation="nearest"
@@ -48,10 +48,13 @@ class MatplotlibAnimator:
             im.set_data(self.simulation.state)
             return [im]
 
-        return animation.FuncAnimation(
+        # Held on the instance — matplotlib stops the animation if the
+        # FuncAnimation object is garbage collected.
+        self._animation = animation.FuncAnimation(
             fig=fig,
             func=_update,
             frames=self.simulation,
             interval=self.interval,
             cache_frame_data=False,
         )
+        plt.show()

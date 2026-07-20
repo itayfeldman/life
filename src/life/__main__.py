@@ -1,16 +1,11 @@
 import time
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
-import matplotlib.pyplot as plt
-
 from life import logger
 from life.engines import ENGINE_REGISTRY
 from life.infrastructure import CellsPatternRepository
-from life.presentation import MatplotlibAnimator, PygameVisualizer
+from life.presentation import FRONTEND_REGISTRY
 from life.simulation import LifeSimulation
-
-# Converts display-size inches to pygame window pixels (100 px per inch).
-PYGAME_DPI = 100
 
 
 def run_bench(
@@ -62,7 +57,7 @@ def build_parser() -> ArgumentParser:
     )
     parser.add_argument(
         "--frontend",
-        type=str, default="pygame", choices=["matplotlib", "pygame"],
+        type=str, default="pygame", choices=sorted(FRONTEND_REGISTRY.keys()),
         help="Visualisation frontend (default: pygame).",
     )
     parser.add_argument(
@@ -124,21 +119,10 @@ def main() -> None:
         repository=repository,
     )
 
-    if args.frontend == "pygame":
-        PygameVisualizer(
-            simulation=sim,
-            interval=args.interval,
-            window_size=args.display_size * PYGAME_DPI,
-        )()
-    else:
-        animator = MatplotlibAnimator(
-            simulation=sim,
-            cmap=args.cmap,
-            interval=args.interval,
-            figsize=args.display_size,
-        )
-        ani = animator()  # must stay referenced; GC would stop the animation
-        plt.show()
+    visualizer = FRONTEND_REGISTRY[args.frontend](
+        sim, args.interval, args.display_size, args.cmap
+    )
+    visualizer()
 
 
 if __name__ == "__main__":

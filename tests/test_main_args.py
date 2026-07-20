@@ -4,9 +4,30 @@ import time
 from io import StringIO
 from unittest.mock import MagicMock, patch
 
+import numpy as np
 import pytest
 
-from life.__main__ import PYGAME_DPI, build_parser, run_bench
+from life.__main__ import build_parser, run_bench
+from life.domain.protocols import Visualizer
+from life.presentation import (
+    FRONTEND_REGISTRY,
+    PYGAME_DPI,
+    MatplotlibAnimator,
+    PygameVisualizer,
+)
+
+
+class _FakeSimulation:
+    """Minimal Simulation-protocol stand-in; avoids spinning up a real engine."""
+
+    def __init__(self) -> None:
+        self.state = np.zeros((10, 10), dtype=np.int8)
+
+    def __iter__(self) -> "_FakeSimulation":
+        return self
+
+    def __next__(self) -> np.ndarray:
+        return self.state
 
 
 def test_parser_has_display_size():
@@ -79,3 +100,29 @@ def test_run_bench_timing_is_positive(capsys):
             assert val > 0
         except ValueError:
             pass
+
+
+def test_pygame_visualizer_satisfies_visualizer_protocol():
+    visualizer = PygameVisualizer(simulation=_FakeSimulation(), window_size=100)
+    assert isinstance(visualizer, Visualizer)
+
+
+def test_matplotlib_animator_satisfies_visualizer_protocol():
+    animator = MatplotlibAnimator(
+        simulation=_FakeSimulation(), cmap="binary", interval=100, figsize=5
+    )
+    assert isinstance(animator, Visualizer)
+
+
+def test_frontend_registry_has_pygame_and_matplotlib():
+    assert set(FRONTEND_REGISTRY.keys()) == {"pygame", "matplotlib"}
+
+
+def test_frontend_registry_builds_pygame_visualizer():
+    visualizer = FRONTEND_REGISTRY["pygame"](_FakeSimulation(), 100, 8, "binary")
+    assert isinstance(visualizer, PygameVisualizer)
+
+
+def test_frontend_registry_builds_matplotlib_animator():
+    visualizer = FRONTEND_REGISTRY["matplotlib"](_FakeSimulation(), 100, 8, "binary")
+    assert isinstance(visualizer, MatplotlibAnimator)
